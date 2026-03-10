@@ -162,20 +162,19 @@ uv run python src/agents/pydantic_ai_main.py sprint-plan sample_data/large_backl
 
 ### **Environment Setup**
 ```bash
-# Install uv (if not already installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-source $HOME/.local/bin/env
+# Install core dependencies
+pip install -e .
 
-# Set up the project
-./scripts/setup.sh
+# Install with development tools
+pip install -e ".[test,dev]"
 
-# Or manually:
-uv sync                    # Install dependencies
-uv sync --extra dev        # Install with dev dependencies
-uv sync --extra test       # Install with test dependencies
+# Install with all optional dependencies
+pip install -e ".[test,dev,ml,database,docs]"
 
-# Install in development mode
-uv pip install -e .
+# For specific use cases
+pip install -e ".[ml]"        # Machine learning features
+pip install -e ".[database]"  # Database extensions
+pip install -e ".[docs]"      # Documentation tools
 ```
 
 ### **Custom Configuration**
@@ -321,7 +320,7 @@ rm -rf cache/ __pycache__/ .pytest_cache/
 rm -rf logs/*.log
 
 # Reinstall dependencies
-pip install --force-reinstall -r requirements.txt
+pip install --force-reinstall -e ".[test,dev]"
 ```
 
 ### **Dependency Checks**

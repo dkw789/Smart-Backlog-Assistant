@@ -25,8 +25,7 @@ help:
 
 # Development setup
 install:
-	pip install -r requirements.txt
-	pip install flake8 black isort mypy
+	pip install -e ".[test,dev]"
 
 # Testing
 test:

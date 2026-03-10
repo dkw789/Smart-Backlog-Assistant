@@ -10,7 +10,7 @@ git clone <repository-url>
 cd smart-backlog-assistant
 
 # Install dependencies
-pip install -r requirements.txt
+pip install -e ".[test,dev]"
 
 # Set up environment variables
 cp .env.example .env

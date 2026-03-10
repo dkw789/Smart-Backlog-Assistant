@@ -32,7 +32,7 @@ No additional setup required. The system automatically creates a SQLite database
 
 1. **Install PostgreSQL dependencies:**
    ```bash
-   pip install psycopg2-binary
+   pip install -e ".[database]"
    ```
 
 2. **Set database URL in .env:**
@@ -239,7 +239,7 @@ pg_dump smart_backlog_assistant > backup_$(date +%Y%m%d).sql
 
 1. **"No module named 'psycopg2'"**
    ```bash
-   pip install psycopg2-binary
+   pip install -e ".[database]"
    ```
 
 2. **"Permission denied" on SQLite**

@@ -40,17 +40,14 @@ LOG_LEVEL=INFO
 ### 3. Install Dependencies
 
 ```bash
-# Install uv (if not already installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-source $HOME/.local/bin/env
+# Install core dependencies
+pip install -e .
 
-# Set up the project with uv
-./scripts/setup.sh
+# Install with development tools
+pip install -e ".[test,dev]"
 
-# Or manually install dependencies
-uv sync
-uv sync --extra dev  # For development
-uv sync --extra test # For testing
+# Install with all optional dependencies
+pip install -e ".[test,dev,ml,database]"
 ```
 
 ## Usage Examples
@@ -180,7 +177,7 @@ python3 src/agents/pydantic_ai_main.py backlog-analysis sample_data/large_backlo
    ```
    ModuleNotFoundError: No module named 'anthropic'
    ```
-   **Solution**: Install dependencies: `pip install -r requirements.txt`
+   **Solution**: Install dependencies: `pip install -e ".[test,dev]"`
 
 3. **Rate Limiting**
    ```
