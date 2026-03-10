@@ -1,6 +1,33 @@
 # Smart Backlog Assistant
 
-An intelligent AI-powered backlog management system that helps teams analyze requirements, generate user stories, prioritize items, and create sprint plans using advanced multi-agent architecture with **async processing** and **enterprise database layer**.
+🚀 **AI-powered backlog management and analysis tool** with both CLI and REST API interfaces.
+
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## ✨ Features
+
+### 🎯 Core Capabilities
+- **Meeting Notes Processing**: Extract requirements and generate user stories from documents (PDF, DOCX, TXT, MD)
+- **Backlog Analysis**: Comprehensive health analysis with priority recommendations
+- **Multi-AI Support**: Intelligent fallback between OpenAI and Anthropic services
+- **User Story Generation**: AI-powered story creation with acceptance criteria
+- **Priority Assessment**: Smart prioritization based on business impact and complexity
+
+### 🏗️ Architecture
+- **Dual Interface**: Rich CLI and production-ready REST API
+- **Async Processing**: High-performance async operations with background jobs
+- **Provider Pattern**: Dependency injection for enhanced testability
+- **Circuit Breaker**: Resilient AI service calls with automatic recovery
+- **Intelligent Caching**: Performance optimization with configurable TTL
+- **Enterprise Security**: JWT authentication, rate limiting, CORS support
+
+### 🌐 Deployment Ready
+- **Docker Support**: Multi-stage production builds
+- **Health Checks**: Load balancer compatible endpoints
+- **Monitoring**: Comprehensive system status and metrics
+- **Horizontal Scaling**: Stateless design for cloud deployment
 
 ## 🚀 Quick Start
 
@@ -32,32 +59,20 @@ docker-compose -f docker-compose.api.yml up -d
 open http://localhost:8000/docs
 ```
 
-### Generate Sprint Plan
+### Option 3: Multi-Agent System
 ```bash
-uv run python src/agents/pydantic_ai_main.py sprint-plan sample_data/large_backlog.json
+# Generate sprint plans with pydantic-ai agents
+python src/agents/pydantic_ai_main.py sprint-plan sample_data/large_backlog.json
 ```
-
-## 🏗️ Architecture
-
-The Smart Backlog Assistant uses a multi-agent architecture powered by pydantic-ai:
-
-- **Document Analyst Agent**: Extracts requirements from documents and meeting notes
-- **Story Writer Agent**: Generates well-structured user stories with acceptance criteria
-- **Priority Manager Agent**: Assesses priorities and recommends sprint compositions
-- **Backlog Coach Agent**: Analyzes backlog health and provides improvement recommendations
-- **Coordinator Agent**: Orchestrates workflows across all specialized agents
-
-## ✨ Enhanced Features
-
-- **🤖 Claude Integration**: Uses Anthropic's Claude as the default AI provider
-- **🔄 Intelligent Caching**: Reduces API calls and improves performance
-- **🛡️ Error Handling**: Circuit breakers and retry mechanisms for resilience
-- **🎨 Rich CLI**: Beautiful command-line interface with progress tracking
-- **📊 Structured Logging**: Comprehensive logging with performance metrics
-- **🔍 Data Validation**: Pydantic models ensure data integrity
 
 ## 📚 Documentation
 
+### API Documentation
+- **[REST API Guide](README.api.md)** - Complete FastAPI implementation guide
+- **Interactive Docs**: http://localhost:8000/docs (when API is running)
+- **ReDoc**: http://localhost:8000/redoc (alternative API docs)
+
+### Additional Documentation
 All documentation is organized in the [`docs/`](./docs/) folder:
 
 - **[Setup Guide](./docs/CLAUDE_SETUP.md)** - Complete Claude/Anthropic setup instructions
@@ -65,73 +80,142 @@ All documentation is organized in the [`docs/`](./docs/) folder:
 - **[Run Commands](./docs/RUN_COMMANDS.md)** - Comprehensive command reference
 - **[Architecture](./docs/ARCHITECTURE.md)** - System design and component overview
 - **[Docker Guide](./docs/DOCKER_GUIDE.md)** - Containerization and deployment
-- **[Improvements](./docs/IMPROVEMENTS.md)** - System enhancements and roadmap
 
 ## 🧪 Testing
 
 ```bash
+# Install test dependencies
+pip install -e .[test]
+
 # Run all tests
-uv run pytest tests/ -v
+pytest tests/ -v
 
 # Run with coverage
-uv run pytest tests/ --cov=src --cov-report=html
+pytest tests/ --cov=src --cov-report=html
+
+# Test specific modules
+pytest tests/test_api.py -v
+pytest tests/reliable/ -v
 
 # Test configuration
-uv run python test_claude_simple.py
-
-# Development workflow
-./scripts/dev.sh test        # Run tests
-./scripts/dev.sh test-cov    # Run with coverage
-./scripts/dev.sh config-test # Test Claude config
+python test_claude_simple.py
 ```
 
-## 🐳 Docker
+## 🐳 Docker Deployment
 
+### CLI Version
 ```bash
-# Build and run with Docker Compose
-docker-compose up --build
+# Build and run CLI
+docker build -t smart-backlog-cli .
+docker run -it smart-backlog-cli
+```
 
-# Or build manually
-docker build -t smart-backlog-assistant .
-docker run -e ANTHROPIC_API_KEY=your_key smart-backlog-assistant
+### API Version (Production)
+```bash
+# Start full stack with API, Redis, PostgreSQL
+docker-compose -f docker-compose.api.yml up -d
+
+# Scale API instances
+docker-compose -f docker-compose.api.yml up -d --scale smart-backlog-api=3
+
+# View logs
+docker-compose -f docker-compose.api.yml logs -f smart-backlog-api
+```
+
+## 🏗️ Project Structure
+
+```
+src/
+├── api/                 # FastAPI REST API
+│   ├── main.py         # API application
+│   ├── models.py       # Pydantic models
+│   ├── auth.py         # JWT authentication
+│   └── jobs.py         # Background job management
+├── processors/         # AI processing modules
+│   ├── ai_processor.py # Sync AI processing
+│   └── ai_processor_async.py # Async AI processing
+├── generators/         # Content generation
+│   ├── priority_engine.py # Priority assessment
+│   └── user_story_generator.py # Story generation
+├── agents/             # Multi-agent system (pydantic-ai)
+│   ├── coordinator.py  # Agent orchestration
+│   ├── document_analyst.py # Document processing
+│   └── story_writer.py # Story generation
+├── utils/              # Utility modules
+│   ├── caching_system.py # Intelligent caching
+│   ├── rich_cli.py     # Terminal interface
+│   └── enhanced_error_handler.py # Circuit breakers
+├── providers/          # Mock providers for testing
+├── config.py           # Configuration management
+└── main_unified.py     # Primary CLI entry point
 ```
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Set up the development environment: `./scripts/setup.sh`
-4. Make your changes
-5. Run tests: `./scripts/dev.sh test`
-6. Format code: `./scripts/dev.sh format`
-7. Run linting: `./scripts/dev.sh lint`
-8. Submit a pull request
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Install** dependencies (`pip install -e .[test,dev]`)
+4. **Make** your changes
+5. **Run** tests (`pytest`)
+6. **Commit** changes (`git commit -m 'Add amazing feature'`)
+7. **Push** to branch (`git push origin feature/amazing-feature`)
+8. **Open** a Pull Request
 
-### Development Workflow
-
+### Development Setup
 ```bash
-# Setup development environment
-./scripts/setup.sh
+# Clone and setup
+git clone https://github.com/dkw789/Smart-Backlog-Assistant.git
+cd Smart-Backlog-Assistant
+pip install -e .[test,dev]
 
-# Common development tasks
-./scripts/dev.sh install     # Install dependencies
-./scripts/dev.sh test        # Run tests
-./scripts/dev.sh format      # Format code
-./scripts/dev.sh lint        # Run linters
-./scripts/dev.sh demo        # Run demo
-./scripts/dev.sh help        # Show all commands
+# Run tests
+pytest
+
+# Start API for development
+uvicorn src.api.main:app --reload
 ```
 
-## 📄 License
+##  Monitoring & Health Checks
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+### API Health Checks
+```bash
+# Basic health (load balancers)
+curl http://localhost:8000/health
+
+# Detailed health (monitoring)
+curl http://localhost:8000/health/detailed
+
+# System status (requires auth)
+curl -H "Authorization: Bearer TOKEN" \
+  http://localhost:8000/api/v1/system/status
+```
+
+## 🔐 Security Features
+
+- **JWT Authentication**: Secure token-based API access
+- **Rate Limiting**: Prevent API abuse with configurable limits
+- **Input Validation**: Comprehensive request validation with Pydantic
+- **CORS Support**: Configurable cross-origin request handling
+- **Circuit Breakers**: Protect against cascading failures
 
 ## 🆘 Support
 
-- Check the [troubleshooting section](./docs/RUN_COMMANDS.md#troubleshooting) in the run commands guide
-- Review the [setup guide](./docs/CLAUDE_SETUP.md) for configuration issues
-- Open an issue for bugs or feature requests
+- **API Issues**: Check [API Documentation](README.api.md)
+- **Setup Issues**: Review [setup guide](./docs/CLAUDE_SETUP.md)
+- **Usage Questions**: See [usage guide](./docs/USAGE_GUIDE.md)
+- **Bug Reports**: Open an issue on GitHub
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **OpenAI** and **Anthropic** for AI services
+- **FastAPI** for the excellent web framework
+- **Rich** for beautiful terminal interfaces
+- **Pydantic** for data validation
 
 ---
 
-**Ready to transform your backlog management with AI? Get started with the [Setup Guide](./docs/CLAUDE_SETUP.md)!**
+**Made with ❤️ for better backlog management**

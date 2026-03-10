@@ -5,7 +5,8 @@ Welcome to the Smart Backlog Assistant documentation! This index will help you f
 ## 📖 Documentation Overview
 
 ### 🚀 Getting Started
-- **[README](../README.md)** - Main project overview and quick start guide
+- **[README](../README.md)** - Main project overview with CLI and API quick start
+- **[API Documentation](../README.api.md)** - Complete FastAPI REST API guide
 - **[CLAUDE_SETUP.md](./CLAUDE_SETUP.md)** - Complete setup guide for Claude (Anthropic) integration
 - **[USAGE_GUIDE.md](./USAGE_GUIDE.md)** - Detailed usage examples and workflows
 
@@ -17,6 +18,7 @@ Welcome to the Smart Backlog Assistant documentation! This index will help you f
 ### 🐳 Deployment & Operations
 - **[DOCKER_GUIDE.md](./DOCKER_GUIDE.md)** - Containerization, Docker setup, and deployment instructions
 - **[FINAL_SUMMARY.md](./FINAL_SUMMARY.md)** - Complete project summary and implementation details
+- **[DATABASE_SETUP.md](./DATABASE_SETUP.md)** - Database configuration and setup guide
 
 ## 🎯 Quick Navigation
 
@@ -66,11 +68,13 @@ Welcome to the Smart Backlog Assistant documentation! This index will help you f
 | I want to... | Go to... |
 |--------------|----------|
 | Get started quickly | [README](../README.md) → [Claude Setup](./CLAUDE_SETUP.md) |
+| Use the REST API | [API Documentation](../README.api.md) |
 | Set up Claude/Anthropic | [CLAUDE_SETUP.md](./CLAUDE_SETUP.md) |
 | Learn all commands | [RUN_COMMANDS.md](./RUN_COMMANDS.md) |
 | Understand the architecture | [ARCHITECTURE.md](./ARCHITECTURE.md) |
 | Deploy with Docker | [DOCKER_GUIDE.md](./DOCKER_GUIDE.md) |
 | See usage examples | [USAGE_GUIDE.md](./USAGE_GUIDE.md) |
+| Set up database | [DATABASE_SETUP.md](./DATABASE_SETUP.md) |
 | Learn about enhancements | [IMPROVEMENTS.md](./IMPROVEMENTS.md) |
 | Get complete project overview | [FINAL_SUMMARY.md](./FINAL_SUMMARY.md) |
 
