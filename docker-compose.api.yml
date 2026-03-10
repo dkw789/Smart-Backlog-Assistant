@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  smart-backlog-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - API_SECRET_KEY=${API_SECRET_KEY:-your-secret-key-change-in-production}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - CACHE_TTL_SECONDS=${CACHE_TTL_SECONDS:-3600}
+      - DEFAULT_AI_SERVICE=${DEFAULT_AI_SERVICE:-anthropic}
+      - API_RATE_LIMIT=${API_RATE_LIMIT:-100/minute}
+    volumes:
+      - ./logs:/app/logs
+      - ./output:/app/output
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - smart-backlog-network
+
+  # Optional: Redis for enhanced caching
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - smart-backlog-network
+
+  # Optional: PostgreSQL for persistent storage
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=smart_backlog
+      - POSTGRES_USER=smart_backlog
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - smart-backlog-network
+
+  # Optional: Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - smart-backlog-api
+    restart: unless-stopped
+    networks:
+      - smart-backlog-network
+
+volumes:
+  redis_data:
+  postgres_data:
+
+networks:
+  smart-backlog-network:
+    driver: bridge

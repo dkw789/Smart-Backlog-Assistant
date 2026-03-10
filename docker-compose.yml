@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  smart-backlog-assistant:
+    build: .
+    container_name: smart-backlog-assistant
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - HUGGINGFACE_API_KEY=${HUGGINGFACE_API_KEY}
+      - DEFAULT_AI_SERVICE=${DEFAULT_AI_SERVICE:-anthropic}
+      - MAX_RETRIES=${MAX_RETRIES:-3}
+      - TIMEOUT_SECONDS=${TIMEOUT_SECONDS:-30}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./input:/app/input:ro
+      - ./output:/app/output
+      - ./logs:/app/logs
+    working_dir: /app
+    command: tail -f /dev/null  # Keep container running for interactive use
+    
+  # Development service with hot reload
+  smart-backlog-dev:
+    build: .
+    container_name: smart-backlog-dev
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - HUGGINGFACE_API_KEY=${HUGGINGFACE_API_KEY}
+      - DEFAULT_AI_SERVICE=${DEFAULT_AI_SERVICE:-anthropic}
+      - MAX_RETRIES=${MAX_RETRIES:-3}
+      - TIMEOUT_SECONDS=${TIMEOUT_SECONDS:-30}
+      - LOG_LEVEL=${LOG_LEVEL:-DEBUG}
+    volumes:
+      - .:/app
+      - ./output:/app/output
+      - ./logs:/app/logs
+    working_dir: /app
+    command: tail -f /dev/null
+    profiles:
+      - dev
+
+volumes:
+  logs:
+    driver: local

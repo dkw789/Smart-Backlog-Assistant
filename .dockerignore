@@ -1,0 +1,190 @@
+# Git
+.git
+.gitignore
+.gitattributes
+README.md
+CHANGELOG.md
+LICENSE
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Testing and Coverage
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+cover/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+env.bak/
+venv.bak/
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+*.code-workspace
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+Icon
+ehthumbs.db
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Project specific outputs
+output/
+outputs/
+demo_output/
+results/
+reports/
+logs/
+*.log
+*.log.*
+cache/
+.cache/
+*.cache
+
+# Environment and secrets
+.env
+.env.*
+config.json
+secrets.json
+credentials.json
+*.key
+*.pem
+
+# Documentation
+docs/
+docs/_build/
+docs/build/
+*.md
+*.rst
+
+# Test files and data
+tests/
+test_*.py
+*_test.py
+sample_data/
+data/
+datasets/
+*.csv
+test_output/
+test_results/
+
+# Temporary and backup files
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+
+# AI model files and caches
+models/
+*.model
+*.pkl
+*.pickle
+huggingface_cache/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Node.js (if any frontend components)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+Jenkinsfile
+
+# Makefile and scripts
+Makefile
+*.sh
+*.bat
+
+# Configuration files
+pytest.ini
+setup.cfg
+tox.ini
+.flake8
+.pre-commit-config.yaml
+
+# Large files that shouldn't be in containers
+*.iso
+*.dmg
+*.img
