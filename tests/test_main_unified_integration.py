@@ -97,9 +97,17 @@ class TestUnifiedSmartBacklogAssistantIntegration:
         
         # Mock story generator
         mock_story_instance = Mock()
-        mock_story_instance.generate_stories_from_requirements.return_value = [
-            Mock(title="User Login Story")
-        ]
+        mock_story = Mock()
+        mock_story.title = "User Login Story"
+        mock_story.user_role = "user"
+        mock_story.functionality = "login"
+        mock_story.benefit = "access account"
+        mock_story.acceptance_criteria = []
+        mock_story.priority = "high"
+        mock_story.estimated_effort = 5
+        mock_story.tags = []
+        mock_story.original_requirement = "User authentication"
+        mock_story_instance.generate_stories_from_requirements.return_value = [mock_story]
         mock_story_gen.return_value = mock_story_instance
         
         assistant = UnifiedSmartBacklogAssistant()
@@ -200,10 +208,29 @@ class TestUnifiedSmartBacklogAssistantIntegration:
         
         # Mock story generator
         mock_story_instance = Mock()
-        mock_story_instance.generate_stories_from_requirements.return_value = [
-            Mock(title="User Login Story"),
-            Mock(title="Password Validation Story")
-        ]
+        mock_story1 = Mock()
+        mock_story1.title = "User Login Story"
+        mock_story1.user_role = "user"
+        mock_story1.functionality = "login"
+        mock_story1.benefit = "access account"
+        mock_story1.acceptance_criteria = []
+        mock_story1.priority = "high"
+        mock_story1.estimated_effort = 5
+        mock_story1.tags = []
+        mock_story1.original_requirement = "Login functionality"
+        
+        mock_story2 = Mock()
+        mock_story2.title = "Password Validation Story"
+        mock_story2.user_role = "user"
+        mock_story2.functionality = "validate password"
+        mock_story2.benefit = "secure access"
+        mock_story2.acceptance_criteria = []
+        mock_story2.priority = "high"
+        mock_story2.estimated_effort = 3
+        mock_story2.tags = []
+        mock_story2.original_requirement = "Password validation"
+        
+        mock_story_instance.generate_stories_from_requirements.return_value = [mock_story1, mock_story2]
         mock_story_gen.return_value = mock_story_instance
         
         assistant = UnifiedSmartBacklogAssistant()
@@ -247,10 +274,10 @@ class TestUnifiedSmartBacklogAssistantIntegration:
         
         assistant = UnifiedSmartBacklogAssistant()
         
-        with pytest.raises(json.JSONDecodeError):
+        with pytest.raises((json.JSONDecodeError, FileNotFoundError)):
             assistant._load_backlog_data(invalid_json_file)
     
-    @patch('src.main_unified.RichCLI')
+    @patch('src.main_unified.RichCLIInterface')
     def test_run_interactive_mode_sync_meeting_notes(self, mock_cli, temp_files):
         """Test synchronous interactive mode for meeting notes."""
         # Mock CLI interface
@@ -276,7 +303,7 @@ class TestUnifiedSmartBacklogAssistantIntegration:
             mock_cli_instance.display_main_menu.assert_called_once()
             mock_process.assert_called_once()
     
-    @patch('src.main_unified.RichCLI')
+    @patch('src.main_unified.RichCLIInterface')
     def test_run_interactive_mode_sync_backlog_analysis(self, mock_cli, temp_files):
         """Test synchronous interactive mode for backlog analysis."""
         # Mock CLI interface

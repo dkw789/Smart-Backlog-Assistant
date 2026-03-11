@@ -34,6 +34,7 @@ class UnifiedSmartBacklogAssistant:
         self.use_async = use_async
         self.enable_caching = enable_caching
         self.use_rich_cli = use_rich_cli
+        self.config = config
         
         self.setup_logging()
         self.logger = get_logger(__name__)
@@ -41,22 +42,21 @@ class UnifiedSmartBacklogAssistant:
         # Initialize components
         self.document_processor = DocumentProcessor()
         self.backlog_analyzer = BacklogAnalyzer()
-        self.story_generator = UserStoryGenerator()
+        self.user_story_generator = UserStoryGenerator()
+        self.story_generator = self.user_story_generator
         self.priority_engine = PriorityEngine()
         self.file_handler = FileHandler()
         
-        # Initialize AI processor (sync or async)
-        if use_async:
-            self.ai_processor = None  # Will be initialized in async context
-            self.async_ai_processor = None  # Will be created when needed
-        else:
-            self.ai_processor = AIProcessor()
-            self.async_ai_processor = None
+        # Always initialize sync AI processor for compatibility
+        self.ai_processor = AIProcessor()
+        self.async_ai_processor = None
         
         # Initialize CLI if requested
         if use_rich_cli:
-            self.cli = RichCLIInterface()
+            self.cli_interface = RichCLIInterface()
+            self.cli = self.cli_interface
         else:
+            self.cli_interface = None
             self.cli = None
         
         # Register services for resilience
@@ -169,10 +169,15 @@ class UnifiedSmartBacklogAssistant:
             output = {
                 "source_file": file_path,
                 "processing_timestamp": processed_doc.metadata,
+                "structured_requirements": ai_response.content,
                 "extracted_requirements": ai_response.content,
                 "user_stories": [
                     self._user_story_to_dict(story) for story in user_stories
                 ],
+                "summary": {
+                    "total_requirements": len(ai_response.content) if isinstance(ai_response.content, list) else 1,
+                    "total_stories": len(user_stories)
+                },
                 "ai_service_used": ai_response.service_used,
                 "processing_time": ai_response.processing_time,
                 "async_processing": False,
@@ -251,6 +256,38 @@ class UnifiedSmartBacklogAssistant:
 
             return output
 
+        except Exception as e:
+            self.logger.error(f"Error analyzing backlog: {str(e)}")
+            raise
+
+    def analyze_backlog_sync(self, backlog_file: str, output_path: Optional[str] = None) -> Dict[str, Any]:
+        """Analyze existing backlog synchronously."""
+        self.logger.info(f"Analyzing backlog from: {backlog_file}")
+        
+        try:
+            items = self._load_backlog_data(backlog_file)
+            analysis = self.backlog_analyzer.analyze_backlog_data(items)
+            
+            output = {
+                "source_file": backlog_file,
+                "analysis_summary": {
+                    "total_items": analysis.total_items,
+                    "health_score": analysis.health_score,
+                    "items_by_priority": analysis.items_by_priority,
+                    "items_by_status": analysis.items_by_status,
+                },
+                "missing_information": analysis.missing_information,
+                "recommendations": analysis.recommendations,
+                "enhanced_items": self.backlog_analyzer.enhance_backlog_items(items),
+                "async_processing": False,
+            }
+            
+            if output_path:
+                self.file_handler.write_json_file(output_path, output)
+                self.logger.info(f"Analysis saved to: {output_path}")
+            
+            return output
+            
         except Exception as e:
             self.logger.error(f"Error analyzing backlog: {str(e)}")
             raise
@@ -644,8 +681,11 @@ class UnifiedSmartBacklogAssistant:
         sprint_items_serializable = [serialize_item(item) for item in sprint_items]
         
         result = {
+            "selected_items": sprint_items_serializable,
             "sprint_items": sprint_items_serializable,
+            "sprint_capacity": capacity,
             "capacity": capacity,
+            "total_effort_planned": sum(item.get("effort_points", item.get("story_points", 0)) for item in sprint_items),
             "total_points": sum(item.get("story_points", 0) for item in sprint_items),
             "backlog_analysis": analysis,
             "generated_at": datetime.utcnow().isoformat()
@@ -689,8 +729,11 @@ class UnifiedSmartBacklogAssistant:
         sprint_items_serializable = [serialize_item(item) for item in sprint_items]
         
         result = {
+            "selected_items": sprint_items_serializable,
             "sprint_items": sprint_items_serializable,
+            "sprint_capacity": capacity,
             "capacity": capacity,
+            "total_effort_planned": sum(item.get("effort_points", item.get("story_points", 0)) for item in sprint_items),
             "total_points": sum(item.get("story_points", 0) for item in sprint_items),
             "backlog_analysis": analysis,
             "generated_at": datetime.utcnow().isoformat()
@@ -756,16 +799,17 @@ class UnifiedSmartBacklogAssistant:
         requirements = self.ai_processor.extract_requirements(requirements_content)
         
         # Generate user stories from requirements
-        user_stories = self.user_story_generator.generate_user_stories(requirements.content)
+        user_stories = self.user_story_generator.generate_stories_from_requirements(requirements.content)
         
         result = {
+            "structured_requirements": requirements.content,
             "requirements": requirements.content,
-            "user_stories": user_stories.content,
+            "user_stories": [self._user_story_to_dict(story) for story in user_stories],
             "source_file": requirements_file,
             "processed_at": datetime.utcnow().isoformat(),
             "summary": {
                 "total_requirements": len(requirements.content) if isinstance(requirements.content, list) else 1,
-                "total_user_stories": len(user_stories.content) if isinstance(user_stories.content, list) else 1
+                "total_user_stories": len(user_stories)
             }
         }
         
