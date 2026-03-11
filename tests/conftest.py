@@ -10,10 +10,9 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-# Add src to Python path
+# Add project root to Python path for imports
 project_root = os.path.dirname(os.path.dirname(__file__))
-src_path = os.path.join(project_root, "src")
-sys.path.insert(0, src_path)
+sys.path.insert(0, project_root)
 
 # Import with proper module paths
 from src.models.ai_models import AgentRole, AIRequest, AIResponse, AIService

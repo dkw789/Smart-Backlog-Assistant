@@ -2,11 +2,11 @@
 .git
 .gitignore
 .gitattributes
-README.md
 CHANGELOG.md
 
-# Allow LICENSE file for Docker builds (required by pyproject.toml)
+# Allow LICENSE and README files for Docker builds (required by pyproject.toml)
 !LICENSE
+!README.md
 
 # Python
 __pycache__/

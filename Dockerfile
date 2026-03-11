@@ -20,8 +20,8 @@ RUN apt-get update && apt-get install -y \
     && mv /root/.local/bin/uv /usr/local/bin/uv \
     && mv /root/.local/bin/uvx /usr/local/bin/uvx
 
-# Copy project configuration and LICENSE first for better caching
-COPY pyproject.toml uv.lock* LICENSE ./
+# Copy project configuration, LICENSE, and README first for better caching
+COPY pyproject.toml uv.lock* LICENSE README.md ./
 
 # Install Python dependencies using uv
 RUN uv sync --frozen --no-dev --no-install-project
