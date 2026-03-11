@@ -102,12 +102,17 @@ cache/
 
 # Environment and secrets
 .env
-.env.*
+.env.local
+.env.production
+.env.staging
 config.json
 secrets.json
 credentials.json
 *.key
 *.pem
+
+# Allow .env.example for Docker builds
+!.env.example
 
 # Documentation
 docs/
@@ -116,16 +121,18 @@ docs/build/
 *.md
 *.rst
 
-# Test files and data
-tests/
+# Test files and data - Allow tests/ and sample_data/ for Docker builds
 test_*.py
 *_test.py
-sample_data/
 data/
 datasets/
 *.csv
 test_output/
 test_results/
+
+# Allow tests/ and sample_data/ for Docker builds
+!tests/
+!sample_data/
 
 # Temporary and backup files
 tmp/
