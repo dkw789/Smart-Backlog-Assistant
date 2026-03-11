@@ -120,8 +120,11 @@ credentials.json
 docs/
 docs/_build/
 docs/build/
-*.md
 *.rst
+
+# Exclude markdown files except README.md and LICENSE (needed for build)
+*.md
+!README.md
 
 # Test files and data - Allow tests/ and sample_data/ for Docker builds
 test_*.py

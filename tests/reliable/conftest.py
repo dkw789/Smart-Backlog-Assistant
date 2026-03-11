@@ -10,26 +10,55 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-# Add project root to Python path for imports
+# Add project root and src to Python path for imports
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+src_path = os.path.join(project_root, "src")
 sys.path.insert(0, project_root)
+sys.path.insert(0, src_path)
 
-# Import with src prefix for consistency
-from src.models.ai_models import AgentRole, AIRequest, AIResponse, AIService
-from src.models.backlog_models import (
-    AcceptanceCriterion,
-    BacklogItem,
-    BacklogProject,
-    UserStory,
-)
-from src.models.base_models import (
-    BusinessImpact,
-    Category,
-    EffortEstimate,
-    Priority,
-    Status,
-    TechnicalComplexity,
-)
+# Try different import approaches for different environments
+try:
+    # Try src.models imports first (for CI/GitHub Actions)
+    from src.models.ai_models import AgentRole, AIRequest, AIResponse, AIService
+    from src.models.backlog_models import (
+        AcceptanceCriterion,
+        BacklogItem,
+        BacklogProject,
+        UserStory,
+    )
+    from src.models.base_models import (
+        BusinessImpact,
+        Category,
+        EffortEstimate,
+        Priority,
+        Status,
+        TechnicalComplexity,
+    )
+except ImportError:
+    # Fallback to direct imports (for local development)
+    try:
+        from models.ai_models import AgentRole, AIRequest, AIResponse, AIService
+        from models.backlog_models import (
+            AcceptanceCriterion,
+            BacklogItem,
+            BacklogProject,
+            UserStory,
+        )
+        from models.base_models import (
+            BusinessImpact,
+            Category,
+            EffortEstimate,
+            Priority,
+            Status,
+            TechnicalComplexity,
+        )
+    except ImportError as e:
+        # If both fail, provide helpful error message
+        print(f"Failed to import models: {e}")
+        print(f"Project root: {project_root}")
+        print(f"Src path: {src_path}")
+        print(f"Python path: {sys.path}")
+        raise
 
 
 @pytest.fixture
