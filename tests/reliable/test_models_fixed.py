@@ -10,7 +10,7 @@ import json
 def test_base_models_working():
     """Working test for base_models.py - matches actual enum values."""
     
-    from models.base_models import (
+    from src.models.base_models import (
         BaseEntity, ProcessingMetadata, ValidationResult, HealthScore,
         Priority, Status, Category, AgentRole, AIService,
         BusinessImpact, TechnicalComplexity, EffortEstimate
@@ -166,8 +166,8 @@ def test_base_models_working():
 def test_backlog_models_working():
     """Working test for backlog_models.py - matches actual field types."""
     
-    from models.backlog_models import BacklogItem, AcceptanceCriterion, UserStory
-    from models.base_models import (
+    from src.models.backlog_models import BacklogItem, AcceptanceCriterion, UserStory
+    from src.models.base_models import (
         Priority, Status, Category, BusinessImpact, 
         TechnicalComplexity, EffortEstimate
     )

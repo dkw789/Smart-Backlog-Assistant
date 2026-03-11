@@ -15,15 +15,15 @@ project_root = os.path.dirname(os.path.dirname(__file__))
 src_path = os.path.join(project_root, "src")
 sys.path.insert(0, src_path)
 
-# Import without "src." prefix since src is already in sys.path
-from models.ai_models import AgentRole, AIRequest, AIResponse, AIService
-from models.backlog_models import (
+# Import with proper module paths
+from src.models.ai_models import AgentRole, AIRequest, AIResponse, AIService
+from src.models.backlog_models import (
     AcceptanceCriterion,
     BacklogItem,
     BacklogProject,
     UserStory,
 )
-from models.base_models import (
+from src.models.base_models import (
     BusinessImpact,
     Category,
     EffortEstimate,
