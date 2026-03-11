@@ -76,4 +76,4 @@ jobs:
           -v $(pwd)/tests:/app/tests \
           -e PYTHONPATH=/app/src \
           smart-backlog-assistant:test \
-          pytest tests/ --cov=src --cov-fail-under=50
+          uv run pytest tests/ --cov=src --cov-fail-under=50
