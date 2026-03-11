@@ -6,11 +6,11 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from src.main import SmartBacklogAssistant
+from src.main_unified import UnifiedSmartBacklogAssistant
 
 
 class TestSmartBacklogAssistant:
-    """Test the original SmartBacklogAssistant class."""
+    """Test the UnifiedSmartBacklogAssistant class."""
 
     @pytest.fixture
     def temp_files(self):
@@ -38,14 +38,14 @@ class TestSmartBacklogAssistant:
 
     def test_assistant_initialization(self):
         """Test SmartBacklogAssistant initialization."""
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler:
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             # Verify all components are initialized
             mock_doc_proc.assert_called_once()
@@ -57,12 +57,12 @@ class TestSmartBacklogAssistant:
 
     def test_process_meeting_notes_success(self, temp_files):
         """Test successful meeting notes processing."""
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler:
             
             # Mock components
             mock_doc = Mock()
@@ -84,7 +84,7 @@ class TestSmartBacklogAssistant:
             mock_file = Mock()
             mock_file_handler.return_value = mock_file
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             result = assistant.process_meeting_notes(
                 temp_files["input"],
@@ -99,12 +99,12 @@ class TestSmartBacklogAssistant:
 
     def test_process_meeting_notes_ai_failure(self, temp_files):
         """Test meeting notes processing with AI failure."""
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler:
             
             # Mock components with AI failure
             mock_doc = Mock()
@@ -117,7 +117,7 @@ class TestSmartBacklogAssistant:
             )
             mock_ai_proc.return_value = mock_ai
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             result = assistant.process_meeting_notes(
                 temp_files["input"],
@@ -130,12 +130,12 @@ class TestSmartBacklogAssistant:
 
     def test_analyze_backlog_success(self, temp_files):
         """Test successful backlog analysis."""
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler:
             
             # Mock components
             mock_analyzer_instance = Mock()
@@ -158,7 +158,7 @@ class TestSmartBacklogAssistant:
             mock_file = Mock()
             mock_file_handler.return_value = mock_file
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             result = assistant.analyze_backlog(
                 temp_files["backlog"],
@@ -172,12 +172,12 @@ class TestSmartBacklogAssistant:
 
     def test_generate_sprint_plan_success(self, temp_files):
         """Test successful sprint plan generation."""
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler:
             
             # Mock components
             mock_analyzer_instance = Mock()
@@ -197,7 +197,7 @@ class TestSmartBacklogAssistant:
             mock_file = Mock()
             mock_file_handler.return_value = mock_file
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             result = assistant.generate_sprint_plan(
                 temp_files["backlog"],
@@ -212,12 +212,12 @@ class TestSmartBacklogAssistant:
 
     def test_process_requirements_document_success(self, temp_files):
         """Test successful requirements document processing."""
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler:
             
             # Mock components
             mock_doc = Mock()
@@ -245,7 +245,7 @@ class TestSmartBacklogAssistant:
             mock_file = Mock()
             mock_file_handler.return_value = mock_file
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             result = assistant.process_requirements_document(
                 temp_files["input"],
@@ -261,14 +261,14 @@ class TestSmartBacklogAssistant:
 
     def test_file_not_found_error(self):
         """Test handling of file not found errors."""
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler:
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             with pytest.raises(FileNotFoundError):
                 assistant.process_meeting_notes(
@@ -282,12 +282,12 @@ class TestSmartBacklogAssistant:
         empty_file = Path(temp_files["dir"]) / "empty.txt"
         empty_file.write_text("")
         
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler:
             
             # Mock components
             mock_doc = Mock()
@@ -300,7 +300,7 @@ class TestSmartBacklogAssistant:
             )
             mock_ai_proc.return_value = mock_ai
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             result = assistant.process_meeting_notes(
                 str(empty_file),
@@ -316,19 +316,19 @@ class TestSmartBacklogAssistant:
         invalid_json_file = Path(temp_files["dir"]) / "invalid.json"
         invalid_json_file.write_text("invalid json content")
         
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler:
             
             # Mock components
             mock_analyzer_instance = Mock()
             mock_analyzer_instance.extract_backlog_from_json.side_effect = ValueError("Invalid JSON")
             mock_analyzer.return_value = mock_analyzer_instance
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             with pytest.raises(ValueError):
                 assistant.analyze_backlog(
@@ -338,12 +338,12 @@ class TestSmartBacklogAssistant:
 
     def test_large_capacity_sprint_plan(self, temp_files):
         """Test sprint plan generation with large capacity."""
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler:
             
             # Mock components
             mock_analyzer_instance = Mock()
@@ -362,7 +362,7 @@ class TestSmartBacklogAssistant:
             mock_file = Mock()
             mock_file_handler.return_value = mock_file
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             result = assistant.generate_sprint_plan(
                 temp_files["backlog"],
@@ -375,12 +375,12 @@ class TestSmartBacklogAssistant:
 
     def test_zero_capacity_sprint_plan(self, temp_files):
         """Test sprint plan generation with zero capacity."""
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler:
             
             # Mock components
             mock_analyzer_instance = Mock()
@@ -390,7 +390,7 @@ class TestSmartBacklogAssistant:
             mock_file = Mock()
             mock_file_handler.return_value = mock_file
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             result = assistant.generate_sprint_plan(
                 temp_files["backlog"],
@@ -403,14 +403,14 @@ class TestSmartBacklogAssistant:
 
     def test_component_integration(self):
         """Test that all components work together."""
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler:
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             # Verify all components are accessible
             assert assistant.document_processor is not None
@@ -422,30 +422,30 @@ class TestSmartBacklogAssistant:
 
     def test_logging_integration(self):
         """Test logging integration."""
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler, \
-             patch('src.main.get_logger') as mock_get_logger:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler, \
+             patch('src.main_unified.get_logger') as mock_get_logger:
             
             mock_logger = Mock()
             mock_get_logger.return_value = mock_logger
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             # Logger should be initialized
             mock_get_logger.assert_called()
 
     def test_output_path_none(self, temp_files):
         """Test behavior when output_path is None."""
-        with patch('src.main.DocumentProcessor') as mock_doc_proc, \
-             patch('src.main.BacklogAnalyzer') as mock_analyzer, \
-             patch('src.main.AIProcessor') as mock_ai_proc, \
-             patch('src.main.UserStoryGenerator') as mock_story_gen, \
-             patch('src.main.PriorityEngine') as mock_priority, \
-             patch('src.main.FileHandler') as mock_file_handler:
+        with patch('src.main_unified.DocumentProcessor') as mock_doc_proc, \
+             patch('src.main_unified.BacklogAnalyzer') as mock_analyzer, \
+             patch('src.main_unified.AIProcessor') as mock_ai_proc, \
+             patch('src.main_unified.UserStoryGenerator') as mock_story_gen, \
+             patch('src.main_unified.PriorityEngine') as mock_priority, \
+             patch('src.main_unified.FileHandler') as mock_file_handler:
             
             # Mock components
             mock_doc = Mock()
@@ -462,7 +462,7 @@ class TestSmartBacklogAssistant:
             mock_generator.generate_stories_from_requirements.return_value = []
             mock_story_gen.return_value = mock_generator
             
-            assistant = SmartBacklogAssistant()
+            assistant = UnifiedSmartBacklogAssistant()
             
             result = assistant.process_meeting_notes(
                 temp_files["input"],

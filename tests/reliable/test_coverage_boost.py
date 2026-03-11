@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from src.processors.user_story_generator import UserStoryGenerator
+from src.generators.user_story_generator import UserStoryGenerator
 from src.processors.backlog_analyzer import BacklogAnalyzer
 from src.generators.priority_engine import PriorityEngine
 from src.utils.caching_system import CacheEntry, CacheBackend

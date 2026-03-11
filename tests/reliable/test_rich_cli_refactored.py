@@ -13,11 +13,11 @@ class TestRichCLIRefactored:
     
     def test_cli_with_mock_provider(self):
         """Test CLI with mock provider - no external dependencies."""
-        from utils.rich_cli_refactored import RichCLIRefactored
-        from providers.rich_provider import MockUIProvider
+        from src.utils.rich_cli import RichCLIInterface
+        from src.providers.mock_providers import MockConsoleProvider
         
-        mock_provider = MockUIProvider()
-        cli = RichCLIRefactored(ui_provider=mock_provider)
+        mock_provider = MockConsoleProvider()
+        cli = RichCLIInterface(console_provider=mock_provider)
         
         # Test availability
         assert cli.is_available() == True

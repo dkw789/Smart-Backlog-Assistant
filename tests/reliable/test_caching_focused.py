@@ -10,7 +10,7 @@ from unittest.mock import Mock, patch
 # Add src to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from utils.caching_system import CacheEntry, MemoryCacheBackend, IntelligentCache
+from src.utils.caching_system import CacheEntry, MemoryCacheBackend, IntelligentCache
 
 
 class TestCacheEntry:

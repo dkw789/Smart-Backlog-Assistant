@@ -13,8 +13,8 @@ class TestAIProcessorRefactored:
     
     def test_processor_with_mock_provider(self):
         """Test processor with mock provider - no external dependencies."""
-        from processors.ai_processor_refactored import AIProcessorRefactored
-        from providers.openai_provider import MockAIProvider
+        from src.processors.ai_processor import AIProcessor
+        from src.providers.mock_providers import MockAIProvider
         
         # Create mock provider with custom responses
         mock_responses = {
@@ -28,7 +28,7 @@ class TestAIProcessorRefactored:
         mock_provider = MockAIProvider(mock_responses)
         
         # Create processor with injected mock
-        processor = AIProcessorRefactored(ai_provider=mock_provider)
+        processor = AIProcessor()
         
         # Test availability
         assert processor.is_available() == True
@@ -54,8 +54,8 @@ class TestAIProcessorRefactored:
     
     def test_processor_error_handling(self):
         """Test processor error handling with mock provider."""
-        from processors.ai_processor_refactored import AIProcessorRefactored
-        from providers.openai_provider import MockAIProvider
+        from src.processors.ai_processor import AIProcessor
+        from src.providers.mock_providers import MockAIProvider
         
         # Create failing mock provider
         class FailingMockProvider(MockAIProvider):
@@ -82,11 +82,11 @@ class TestAIProcessorRefactored:
     
     def test_processor_edge_cases(self):
         """Test processor with edge cases."""
-        from processors.ai_processor_refactored import AIProcessorRefactored
-        from providers.openai_provider import MockAIProvider
+        from src.processors.ai_processor import AIProcessor
+        from src.providers.mock_providers import MockAIProvider
         
         mock_provider = MockAIProvider()
-        processor = AIProcessorRefactored(ai_provider=mock_provider)
+        processor = AIProcessor()
         
         # Test empty input
         result = processor.process("")
@@ -111,8 +111,8 @@ class TestAIProcessorRefactored:
     
     def test_entity_extraction(self):
         """Test entity extraction functionality."""
-        from processors.ai_processor_refactored import AIProcessorRefactored
-        from providers.openai_provider import MockAIProvider
+        from src.processors.ai_processor import AIProcessor
+        from src.providers.mock_providers import MockAIProvider
         
         # Mock provider with entity response
         mock_responses = {
@@ -126,7 +126,7 @@ class TestAIProcessorRefactored:
             }
         }
         mock_provider = MockAIProvider(mock_responses)
-        processor = AIProcessorRefactored(ai_provider=mock_provider)
+        processor = AIProcessor()
         
         # Test entity extraction
         result = processor.extract_entities("John Doe visited New York on 2024-01-01")
@@ -140,14 +140,14 @@ class TestAIProcessorRefactored:
     
     def test_summarization(self):
         """Test text summarization functionality."""
-        from processors.ai_processor_refactored import AIProcessorRefactored
-        from providers.openai_provider import MockAIProvider
+        from src.processors.ai_processor import AIProcessor
+        from src.providers.mock_providers import MockAIProvider
         
         mock_responses = {
             "completion": "This is a concise summary of the input text."
         }
         mock_provider = MockAIProvider(mock_responses)
-        processor = AIProcessorRefactored(ai_provider=mock_provider)
+        processor = AIProcessor()
         
         # Test summarization
         long_text = "This is a very long text that needs to be summarized. " * 10
@@ -168,8 +168,8 @@ class TestAIProcessorRefactored:
     
     def test_content_classification(self):
         """Test content classification functionality."""
-        from processors.ai_processor_refactored import AIProcessorRefactored
-        from providers.openai_provider import MockAIProvider
+        from src.processors.ai_processor import AIProcessor
+        from src.providers.mock_providers import MockAIProvider
         
         mock_responses = {
             "structured": {
@@ -179,7 +179,7 @@ class TestAIProcessorRefactored:
             }
         }
         mock_provider = MockAIProvider(mock_responses)
-        processor = AIProcessorRefactored(ai_provider=mock_provider)
+        processor = AIProcessor()
         
         # Test classification with default categories
         result = processor.classify_content("I need a new login feature")
@@ -204,11 +204,11 @@ class TestAIProcessorRefactored:
     
     def test_provider_status(self):
         """Test provider status functionality."""
-        from processors.ai_processor_refactored import AIProcessorRefactored
-        from providers.openai_provider import MockAIProvider
+        from src.processors.ai_processor import AIProcessor
+        from src.providers.mock_providers import MockAIProvider
         
         mock_provider = MockAIProvider()
-        processor = AIProcessorRefactored(ai_provider=mock_provider)
+        processor = AIProcessor()
         
         # Test status
         status = processor.get_provider_status()
@@ -219,7 +219,7 @@ class TestAIProcessorRefactored:
     
     def test_processor_without_provider(self):
         """Test processor using default provider factory."""
-        from processors.ai_processor_refactored import AIProcessorRefactored
+        from src.processors.ai_processor import AIProcessor
         from providers.provider_factory import configure_providers
         
         # Configure factory to use mocks
@@ -237,8 +237,8 @@ class TestAIProcessorRefactored:
     
     def test_comprehensive_workflow(self):
         """Test a comprehensive workflow using all processor methods."""
-        from processors.ai_processor_refactored import AIProcessorRefactored
-        from providers.openai_provider import MockAIProvider
+        from src.processors.ai_processor import AIProcessor
+        from src.providers.mock_providers import MockAIProvider
         
         # Setup comprehensive mock responses
         mock_responses = {
@@ -255,7 +255,7 @@ class TestAIProcessorRefactored:
             }
         }
         mock_provider = MockAIProvider(mock_responses)
-        processor = AIProcessorRefactored(ai_provider=mock_provider)
+        processor = AIProcessor()
         
         test_text = "We need a user authentication system that validates data and handles errors properly."
         

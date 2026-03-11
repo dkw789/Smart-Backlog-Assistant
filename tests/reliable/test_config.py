@@ -15,25 +15,27 @@ class TestAppConfig:
 
     def test_default_values(self):
         """Test that default configuration values are set correctly."""
-        test_config = AppConfig()
-        
-        assert test_config.log_level == "INFO"
-        assert test_config.log_file == "backlog_assistant.log"
-        assert test_config.default_ai_service == "anthropic"
-        assert test_config.max_retries == 3
-        assert test_config.timeout_seconds == 30
-        assert test_config.max_tokens == 2000
-        assert test_config.temperature == 0.7
-        assert test_config.circuit_breaker_failure_threshold == 5
-        assert test_config.circuit_breaker_recovery_timeout == 60.0
-        assert test_config.circuit_breaker_success_threshold == 3
-        assert test_config.cache_ttl_seconds == 3600
-        assert test_config.cache_max_size == 1000
-        assert test_config.enable_caching is True
-        assert test_config.max_file_size_mb == 50
-        assert test_config.default_sprint_capacity == 40
-        assert test_config.debug_mode is False
-        assert test_config.use_mock_providers is False
+        # Clear environment variables that might interfere
+        with patch.dict(os.environ, {}, clear=True):
+            test_config = AppConfig()
+            
+            assert test_config.log_level == "INFO"
+            assert test_config.log_file == "backlog_assistant.log"
+            assert test_config.default_ai_service == "anthropic"
+            assert test_config.max_retries == 3
+            assert test_config.timeout_seconds == 30
+            assert test_config.max_tokens == 2000
+            assert test_config.temperature == 0.7
+            assert test_config.circuit_breaker_failure_threshold == 5
+            assert test_config.circuit_breaker_recovery_timeout == 60.0
+            assert test_config.circuit_breaker_success_threshold == 3
+            assert test_config.cache_ttl_seconds == 3600
+            assert test_config.cache_max_size == 1000
+            assert test_config.enable_caching is True
+            assert test_config.max_file_size_mb == 50
+            assert test_config.default_sprint_capacity == 40
+            assert test_config.debug_mode is False
+            assert test_config.use_mock_providers is False
 
     def test_supported_file_extensions_default(self):
         """Test that supported file extensions are set correctly."""
@@ -65,7 +67,7 @@ class TestAppConfig:
         with patch.dict(os.environ, {
             'OPENAI_API_KEY': 'test-openai-key',
             'ANTHROPIC_API_KEY': 'test-anthropic-key'
-        }):
+        }, clear=True):
             test_config = AppConfig()
             ai_config = test_config.get_ai_service_config()
             

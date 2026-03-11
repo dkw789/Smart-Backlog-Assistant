@@ -10,10 +10,10 @@ from unittest.mock import Mock, patch
 # Add src to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from utils.validators import InputValidator, OutputValidator
-from utils.file_handler import FileHandler
-from utils.exception_handler import ExceptionHandler, BacklogAssistantError
-from utils.logger_service import LoggerService, get_logger
+from src.utils.validators import InputValidator, OutputValidator
+from src.utils.file_handler import FileHandler
+from src.utils.exception_handler import ExceptionHandler, BacklogAssistantError
+from src.utils.logger_service import LoggerService, get_logger
 
 
 class TestValidators:
