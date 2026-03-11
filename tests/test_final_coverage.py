@@ -3,9 +3,10 @@
 import pytest
 from src.models.ai_models import AIRequest, AIResponse
 from src.models.backlog_models import BacklogItem, BacklogAnalysis
-from src.models.base_models import Priority, Status, UserStory, AcceptanceCriterion
+from src.models.base_models import Priority, Status
+from src.models.backlog_models import UserStory, AcceptanceCriterion
 from src.utils.caching_system import IntelligentCache, AIResponseCache
-from src.utils.enhanced_error_handler import CircuitBreaker, CircuitBreakerState
+from src.utils.enhanced_error_handler import CircuitBreaker, CircuitState
 
 
 class TestAIModels:

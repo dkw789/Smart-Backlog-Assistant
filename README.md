@@ -31,40 +31,69 @@
 - **Monitoring**: Comprehensive system status and metrics
 - **Horizontal Scaling**: Stateless design for cloud deployment
 
+## 🏗️ Two Architectural Approaches
+
+The Smart Backlog Assistant offers **two distinct frameworks** for different use cases:
+
+### **Main Framework (Unified)** �
+**Traditional monolithic approach with centralized processing**
+- **Single entry point** through unified processing pipeline
+- **Sequential workflow** - processes tasks step by step
+- **Direct API calls** to OpenAI, Anthropic, Qwen services
+- **Simpler architecture** - easier to understand and debug
+- **Faster processing** - optimized for standard tasks
+
+**Best for:** Standard document processing, basic backlog analysis, when you need predictable linear processing
+
+### **Pydantic-AI Framework (Multi-Agent)** 🤖
+**Modern multi-agent system with specialized AI agents**
+- **Multiple specialized agents** working in coordination:
+  - **Document Analyst Agent** - Extracts and analyzes content
+  - **Backlog Coach Agent** - Provides strategic guidance
+  - **Priority Manager Agent** - Intelligent priority assessment
+  - **Story Writer Agent** - Advanced user story generation
+  - **Coordinator Agent** - Orchestrates agent interactions
+- **Agent collaboration** - Agents share context and build on each other's work
+- **Advanced reasoning** - More sophisticated AI decision-making
+- **Richer output** - Enhanced results through multiple expert perspectives
+
+**Best for:** Complex document analysis, strategic backlog coaching, advanced user story generation with nuanced reasoning
+
+---
+
 ## 🚀 Quick Start
 
-### Option 1: CLI Interface
+### **Easy Way: Use Wrapper Scripts (Recommended)**
 
 ```bash
-# Install
+# Install dependencies
 pip install -e .
 
 # Set up environment
 export OPENAI_API_KEY="your-key"
 export ANTHROPIC_API_KEY="your-key"
 
-# Run interactive mode
-smart-backlog
+# Main Framework (Unified) - Fast & Simple
+./run.sh meeting-notes sample_data/complex_meeting_notes.md -o output/meeting_analysis.json
+./run.sh analyze-backlog sample_data/large_backlog.json -o output/backlog_analysis.json
 
-# Or direct commands
-smart-backlog meeting-notes document.pdf -o results.json
-smart-backlog analyze-backlog backlog.json -o analysis.json
+# Pydantic-AI Framework (Multi-Agent) - Advanced & Collaborative
+./run-agents.sh meeting-notes sample_data/complex_meeting_notes.md -o output/pydantic_ai_meeting.json
+./run-agents.sh analyze-backlog sample_data/large_backlog.json -o output/pydantic_ai_backlog.json
+
+# Run tests
+./test.sh                                    # All tests with coverage
+./test.sh tests/test_models.py -v           # Specific test module
 ```
 
-### Option 2: REST API
+### **REST API**
 
 ```bash
 # Start with Docker
 docker-compose -f docker-compose.api.yml up -d
 
-# Access API
+# Access API documentation
 open http://localhost:8000/docs
-```
-
-### Option 3: Multi-Agent System
-```bash
-# Generate sprint plans with pydantic-ai agents
-python src/agents/pydantic_ai_main.py sprint-plan sample_data/large_backlog.json
 ```
 
 ## 📚 Documentation

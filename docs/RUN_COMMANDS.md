@@ -4,41 +4,92 @@
 
 ### **Main Framework (Unified)**
 ```bash
-# Process meeting notes
-python src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md -o output/meeting_analysis.json
+# Easy way: Use the wrapper script (recommended)
+./run.sh meeting-notes sample_data/complex_meeting_notes.md -o output/meeting_analysis.json
+./run.sh analyze-backlog sample_data/large_backlog.json -o output/backlog_analysis.json
+./run.sh sprint-plan sample_data/large_backlog.json --capacity 40 -o output/sprint_plan.json
+./run.sh requirements sample_data/requirements_document.md -o output/requirements_analysis.json
 
-# Analyze backlog health
-python src/main_unified.py analyze-backlog sample_data/large_backlog.json -o output/backlog_analysis.json
-
-# Generate sprint plan
-python src/main_unified.py sprint-plan sample_data/large_backlog.json --capacity 40 -o output/sprint_plan.json
-
-# Process requirements document
-python src/main_unified.py requirements sample_data/requirements_document.md -o output/requirements_analysis.json
+# Manual way: Set PYTHONPATH explicitly
+PYTHONPATH=$(pwd) python src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md -o output/meeting_analysis.json
+PYTHONPATH=$(pwd) python src/main_unified.py analyze-backlog sample_data/large_backlog.json -o output/backlog_analysis.json
+PYTHONPATH=$(pwd) python src/main_unified.py sprint-plan sample_data/large_backlog.json --capacity 40 -o output/sprint_plan.json
+PYTHONPATH=$(pwd) python src/main_unified.py requirements sample_data/requirements_document.md -o output/requirements_analysis.json
 ```
 
 ### **Pydantic-AI Framework (Multi-Agent)**
 ```bash
-# Process meeting notes with multi-agent system
-python src/agents/pydantic_ai_main.py meeting-notes sample_data/complex_meeting_notes.md -o output/pydantic_ai_meeting.json
+# Easy way: Use the agents wrapper script (recommended)
+./run-agents.sh meeting-notes sample_data/complex_meeting_notes.md -o output/pydantic_ai_meeting.json
+./run-agents.sh analyze-backlog sample_data/large_backlog.json -o output/pydantic_ai_backlog.json
+./run-agents.sh sprint-plan sample_data/large_backlog.json --capacity 40 -o output/pydantic_ai_sprint.json
+./run-agents.sh requirements sample_data/requirements_document.md -o output/pydantic_ai_requirements.json
 
-# Analyze backlog with agent orchestration
-python src/agents/pydantic_ai_main.py analyze-backlog sample_data/large_backlog.json -o output/pydantic_ai_backlog.json
-
-# Generate sprint plan with priority manager agent
-python src/agents/pydantic_ai_main.py sprint-plan sample_data/large_backlog.json --capacity 40 -o output/pydantic_ai_sprint.json
-
-# Process requirements with comprehensive agent workflow
-python src/agents/pydantic_ai_main.py requirements sample_data/requirements_document.md -o output/pydantic_ai_requirements.json
+# Manual way: Set PYTHONPATH explicitly
+PYTHONPATH=$(pwd) python src/agents/pydantic_ai_main.py meeting-notes sample_data/complex_meeting_notes.md -o output/pydantic_ai_meeting.json
+PYTHONPATH=$(pwd) python src/agents/pydantic_ai_main.py analyze-backlog sample_data/large_backlog.json -o output/pydantic_ai_backlog.json
+PYTHONPATH=$(pwd) python src/agents/pydantic_ai_main.py sprint-plan sample_data/large_backlog.json --capacity 40 -o output/pydantic_ai_sprint.json
+PYTHONPATH=$(pwd) python src/agents/pydantic_ai_main.py requirements sample_data/requirements_document.md -o output/pydantic_ai_requirements.json
 ```
+
+### **Framework Comparison**
+
+| Aspect | Main Framework (Unified) | Pydantic-AI Framework (Multi-Agent) |
+|--------|--------------------------|-------------------------------------|
+| **API Calls** | 2-5 calls per operation | 40-60+ calls per operation |
+| **Processing Time** | Fast (30-60 seconds) | Thorough (2-5 minutes) |
+| **Analysis Depth** | Standard analysis | Deep multi-perspective analysis |
+| **Agents Involved** | Single AI processor | 5 specialized agents |
+| **Best For** | Quick results, cost efficiency | Comprehensive insights, strategic analysis |
+| **Cost** | Lower API usage | Higher API usage |
+
+### **Cost Analysis**
+
+**Estimated API Costs (per operation):**
+
+| Operation | Main Framework | Pydantic-AI Framework | Cost Difference |
+|-----------|----------------|------------------------|-----------------|
+| **Meeting Notes** | $0.05 - $0.15 | $0.40 - $1.20 | **8-10x higher** |
+| **Backlog Analysis** | $0.10 - $0.25 | $0.80 - $2.50 | **8-10x higher** |
+| **Sprint Planning** | $0.08 - $0.20 | $0.60 - $2.00 | **7-10x higher** |
+
+*Costs based on Claude 3.5 Sonnet pricing (~$3/1M input tokens, ~$15/1M output tokens)*
+
+**Monthly Usage Examples:**
+- **Light Usage** (10 operations/month):
+  - Main Framework: ~$2-5/month
+  - Pydantic-AI Framework: ~$15-40/month
+- **Regular Usage** (50 operations/month):
+  - Main Framework: ~$8-20/month  
+  - Pydantic-AI Framework: ~$75-200/month
+- **Heavy Usage** (200 operations/month):
+  - Main Framework: ~$30-80/month
+  - Pydantic-AI Framework: ~$300-800/month
+
+**Cost Optimization Tips:**
+- Use **Main Framework** for routine daily operations
+- Reserve **Pydantic-AI Framework** for strategic analysis and complex decisions
+- Consider hybrid approach: Main Framework for screening, Pydantic-AI for deep-dive analysis
+
+**Multi-Agent Workflow Example (Backlog Analysis):**
+- **Coordinator Agent**: Orchestrates workflow (2-3 calls)
+- **Backlog Coach Agent**: Strategic analysis per item (10-15 calls)
+- **Priority Manager Agent**: Priority assessment per item (10-15 calls)
+- **Document Analyst Agent**: Requirement extraction (5-10 calls)
+- **Story Writer Agent**: Enhanced story generation (10-15 calls)
+- **Total**: ~40-60 API calls for comprehensive analysis
+
+**When to Choose:**
+- **Main Framework**: Fast daily operations, cost-sensitive environments
+- **Pydantic-AI Framework**: Strategic planning, comprehensive analysis, when quality > speed
 
 ### **Interactive Mode**
 ```bash
 # Interactive CLI mode (main unified framework)
-python src/main_unified.py --interactive
+PYTHONPATH=$(pwd) python src/main_unified.py --interactive
 
 # Demo mode without API keys
-python src/demo_main.py
+PYTHONPATH=$(pwd) python src/demo_main.py
 
 # Development workflow
 ./scripts/dev.sh interactive  # Start interactive mode
@@ -52,20 +103,20 @@ python src/demo_main.py
 
 ### **Testing & Coverage**
 ```bash
-# Run all tests with coverage
+# Easy way: Use the test wrapper script (recommended)
+./test.sh                                    # Run all tests with coverage
+./test.sh tests/test_models.py -v           # Run specific test module
+./test.sh tests/ -k "test_file_handler" -v  # Run tests matching pattern
+./test.sh --cov=src --cov-report=html       # Custom coverage options
+
+# Manual way: Use pytest directly
+python -m pytest tests/ --cov=src --cov-report=term-missing
+python -m pytest tests/test_models.py -v
+python -m pytest tests/ -v -m "not slow"
+
+# Legacy scripts (if available)
 ./scripts/dev.sh test-cov
-
-# Run fast tests (skip slow ones)
-pytest tests/ -v -m "not slow"
-
-# Run specific test module
-pytest tests/test_models.py -v
-
-# Run configuration test
 ./scripts/dev.sh config-test
-
-# Generate coverage report
-pytest --cov=src --cov-report=html --cov-report=term-missing
 ```
 
 ### **Code Quality**
@@ -319,8 +370,19 @@ time python src/agents/pydantic_ai_main.py meeting-notes sample_data/complex_mee
 
 ### **Common Issues**
 ```bash
-# Fix import path issues
+# Fix import path issues (recommended approach)
+export PYTHONPATH="$(pwd)"
+
+# Alternative: Add src to path
 export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
+
+# Fix pydantic_settings import issues with pyenv
+# Use full Python executable path instead of pyenv shims
+PYTHONPATH=$(pwd) /Users/yin.lam.tze.ting/.pyenv/versions/3.12.12/bin/python src/main_unified.py [args]
+
+# Or find your Python path and use it directly
+PYTHON_PATH=$(python -c "import sys; print(sys.executable)")
+PYTHONPATH=$(pwd) $PYTHON_PATH src/main_unified.py [args]
 
 # Clear cache
 rm -rf cache/ __pycache__/ .pytest_cache/
@@ -384,23 +446,23 @@ kubectl get pods -l app=smart-backlog-assistant
 
 ### **Most Used Commands**
 ```bash
-# 1. Basic meeting notes processing
-python src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md -o output/meeting_analysis.json
+# 1. Basic meeting notes processing (recommended)
+./run.sh meeting-notes sample_data/complex_meeting_notes.md -o output/meeting_analysis.json
 
-# 2. Enhanced agent-based processing  
-python src/agents/pydantic_ai_main.py meeting-notes sample_data/complex_meeting_notes.md -o output/pydantic_ai_meeting.json
+# 2. Run tests with coverage (recommended)
+./test.sh
 
-# 3. Run tests with coverage
-make test-cov
+# 3. Run specific tests
+./test.sh tests/test_models.py -v
 
-# 4. Format and lint code
-make format && make lint
+# 4. Enhanced agent-based processing (recommended)
+./run-agents.sh meeting-notes sample_data/complex_meeting_notes.md -o output/pydantic_ai_meeting.json
 
-# 5. Start API server
-python src/api/main.py
+# 5. Interactive demo mode
+PYTHONPATH=$(pwd) python src/demo_main.py
 
-# 6. Interactive demo mode
-python src/demo_main.py
+# 6. Start API server
+PYTHONPATH=$(pwd) python src/api/main.py
 ```
 
 ### **Environment Variables**
