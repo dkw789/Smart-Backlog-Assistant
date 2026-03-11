@@ -9,19 +9,6 @@ This module provides REST API endpoints for the Smart Backlog Assistant:
 - System health and monitoring
 """
 
-from .auth import (
-    authenticate_user,
-    create_access_token,
-    get_current_user,
-    verify_token,
-)
-from .jobs import (
-    JobManager,
-    create_job,
-    get_job_status,
-    update_job_status,
-)
-
 __all__ = [
     "authenticate_user",
     "create_access_token", 

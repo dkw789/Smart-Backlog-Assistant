@@ -10,20 +10,6 @@ This module contains various AI agents for different tasks:
 - pydantic_ai_main: Pydantic AI integration
 """
 
-# Import context models first (no circular dependencies)
-from .context_models import (
-    AgentContext,
-    TaskContext,
-    AgentResponse,
-)
-
-# Import agent classes (may have dependencies on models)
-from .backlog_coach import BacklogCoach
-from .coordinator import AgentCoordinator
-from .document_analyst import DocumentAnalyst
-from .priority_manager import PriorityManager
-from .story_writer import StoryWriter
-
 __all__ = [
     "AgentContext",
     "TaskContext",
