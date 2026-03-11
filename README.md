@@ -5,6 +5,8 @@
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://github.com/dkw789/Smart-Backlog-Assistant/actions/workflows/test-coverage.yml/badge.svg)](https://github.com/dkw789/Smart-Backlog-Assistant/actions/workflows/test-coverage.yml)
+[![Coverage](https://codecov.io/gh/dkw789/Smart-Backlog-Assistant/branch/main/graph/badge.svg)](https://codecov.io/gh/dkw789/Smart-Backlog-Assistant)
 
 ## ✨ Features
 
@@ -75,6 +77,10 @@ python src/agents/pydantic_ai_main.py sprint-plan sample_data/large_backlog.json
 ### Additional Documentation
 All documentation is organized in the [`docs/`](./docs/) folder:
 
+- **[Problem Definition](./docs/PROBLEM_DEFINITION.md)** - Detailed problem statement and use cases
+- **[Solution Design](./docs/SOLUTION_DESIGN.md)** - Architecture overview and prompt engineering
+- **[Architecture Diagrams](./docs/ARCHITECTURE_DIAGRAMS.md)** - Comprehensive Mermaid diagrams for system architecture
+- **[Testing Approach](./docs/TESTING_APPROACH.md)** - Sample inputs, outputs, and testing methodology
 - **[Setup Guide](./docs/CLAUDE_SETUP.md)** - Complete Claude/Anthropic setup instructions
 - **[Usage Guide](./docs/USAGE_GUIDE.md)** - Detailed usage examples and workflows
 - **[Run Commands](./docs/RUN_COMMANDS.md)** - Comprehensive command reference
