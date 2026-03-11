@@ -31,16 +31,16 @@ HUGGINGFACE_API_KEY=your_huggingface_api_key_here
 
 ```bash
 # Process meeting notes
-python src/main.py meeting-notes sample_data/meeting_notes.txt -o output/meeting_analysis.json
+python src/main_unified.py meeting-notes sample_data/meeting_notes.txt -o output/meeting_analysis.json
 
 # Analyze existing backlog
-python src/main.py analyze-backlog sample_data/backlog.json -o output/backlog_analysis.json
+python src/main_unified.py analyze-backlog sample_data/backlog.json -o output/backlog_analysis.json
 
 # Generate sprint plan
-python src/main.py sprint-plan sample_data/backlog.json --capacity 40 -o output/sprint_plan.json
+python src/main_unified.py sprint-plan sample_data/backlog.json --capacity 40 -o output/sprint_plan.json
 
 # Process requirements document
-python src/main.py requirements sample_data/requirements_document.md -o output/requirements_analysis.json
+python src/main_unified.py requirements sample_data/requirements_document.md -o output/requirements_analysis.json
 ```
 
 ## Detailed Usage Examples
@@ -60,7 +60,7 @@ The Smart Backlog Assistant can extract actionable items from meeting notes and 
 
 **Command**:
 ```bash
-python src/main.py meeting-notes meeting_notes.txt -o output.json
+python src/main_unified.py meeting-notes meeting_notes.txt -o output.json
 ```
 
 **Output**: Structured JSON with:
@@ -89,7 +89,7 @@ Analyze your current backlog for completeness, priority distribution, and improv
 
 **Command**:
 ```bash
-python src/main.py analyze-backlog backlog.json -o analysis.json
+python src/main_unified.py analyze-backlog backlog.json -o analysis.json
 ```
 
 **Output**: Comprehensive analysis including:
@@ -105,7 +105,7 @@ Create optimized sprint plans based on priority, capacity, and dependencies.
 
 **Command**:
 ```bash
-python src/main.py sprint-plan backlog.json --capacity 40 -o sprint.json
+python src/main_unified.py sprint-plan backlog.json --capacity 40 -o sprint.json
 ```
 
 **Output**: Sprint plan with:
@@ -122,7 +122,7 @@ Extract and structure requirements from PDF or Markdown documents.
 
 **Command**:
 ```bash
-python src/main.py requirements requirements.pdf -o requirements_analysis.json
+python src/main_unified.py requirements requirements.pdf -o requirements_analysis.json
 ```
 
 **Output**: Structured analysis with:
@@ -315,7 +315,7 @@ Enable detailed logging for troubleshooting:
 
 ```bash
 export LOG_LEVEL=DEBUG
-python src/main.py meeting-notes input.txt
+python src/main_unified.py meeting-notes input.txt
 ```
 
 Check the log file: `backlog_assistant.log`
@@ -345,7 +345,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Analyze Backlog
         run: |
-          python src/main.py analyze-backlog backlog.json -o analysis.json
+          python src/main_unified.py analyze-backlog backlog.json -o analysis.json
           # Upload results or create PR with recommendations
 ```
 

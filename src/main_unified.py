@@ -599,6 +599,182 @@ class UnifiedSmartBacklogAssistant:
 
         return result
 
+    async def generate_sprint_plan_async(self, backlog_file: str, capacity: int = 40, output_path: Optional[str] = None) -> Dict[str, Any]:
+        """Generate sprint plan asynchronously."""
+        return await self._process_with_caching_async(
+            "sprint_plan",
+            lambda: self._generate_sprint_plan_impl_async(backlog_file, capacity, output_path),
+            f"sprint_{backlog_file}_{capacity}",
+            backlog_file
+        )
+
+    def generate_sprint_plan_sync(self, backlog_file: str, capacity: int = 40, output_path: Optional[str] = None) -> Dict[str, Any]:
+        """Generate sprint plan synchronously."""
+        return self._generate_sprint_plan_impl_sync(backlog_file, capacity, output_path)
+
+    async def _generate_sprint_plan_impl_async(self, backlog_file: str, capacity: int, output_path: Optional[str] = None) -> Dict[str, Any]:
+        """Async sprint plan implementation."""
+        # Load and analyze backlog
+        backlog_data = self._load_backlog_data(backlog_file)
+        analysis = self.backlog_analyzer.analyze_backlog_data(backlog_data)
+        
+        # Generate sprint plan using priority engine
+        sprint_items = self.priority_engine.recommend_sprint_items(backlog_data, capacity)
+        
+        # Convert non-serializable objects to dictionaries for JSON serialization
+        def serialize_item(item):
+            def serialize_obj(obj):
+                # Handle enums specifically
+                if hasattr(obj, 'value') and hasattr(obj, 'name'):
+                    return obj.value
+                elif hasattr(obj, "__dict__"):
+                    return obj.__dict__
+                elif isinstance(obj, dict):
+                    return {k: serialize_obj(v) for k, v in obj.items()}
+                elif isinstance(obj, (list, tuple)):
+                    return [serialize_obj(item) for item in obj]
+                else:
+                    return str(obj)  # Fallback to string representation
+            
+            item_dict = item.copy()
+            for key, value in item_dict.items():
+                item_dict[key] = serialize_obj(value)
+            return item_dict
+        
+        sprint_items_serializable = [serialize_item(item) for item in sprint_items]
+        
+        result = {
+            "sprint_items": sprint_items_serializable,
+            "capacity": capacity,
+            "total_points": sum(item.get("story_points", 0) for item in sprint_items),
+            "backlog_analysis": analysis,
+            "generated_at": datetime.utcnow().isoformat()
+        }
+        
+        # Save output if specified
+        if output_path:
+            self.file_handler.write_json_file(output_path, result)
+            
+        return result
+
+    def _generate_sprint_plan_impl_sync(self, backlog_file: str, capacity: int, output_path: Optional[str] = None) -> Dict[str, Any]:
+        """Sync sprint plan implementation."""
+        # Load and analyze backlog
+        backlog_data = self._load_backlog_data(backlog_file)
+        analysis = self.backlog_analyzer.analyze_backlog_data(backlog_data)
+        
+        # Generate sprint plan using priority engine
+        sprint_items = self.priority_engine.recommend_sprint_items(backlog_data, capacity)
+        
+        # Convert non-serializable objects to dictionaries for JSON serialization
+        def serialize_item(item):
+            def serialize_obj(obj):
+                # Handle enums specifically
+                if hasattr(obj, 'value') and hasattr(obj, 'name'):
+                    return obj.value
+                elif hasattr(obj, "__dict__"):
+                    return obj.__dict__
+                elif isinstance(obj, dict):
+                    return {k: serialize_obj(v) for k, v in obj.items()}
+                elif isinstance(obj, (list, tuple)):
+                    return [serialize_obj(item) for item in obj]
+                else:
+                    return str(obj)  # Fallback to string representation
+            
+            item_dict = item.copy()
+            for key, value in item_dict.items():
+                item_dict[key] = serialize_obj(value)
+            return item_dict
+        
+        sprint_items_serializable = [serialize_item(item) for item in sprint_items]
+        
+        result = {
+            "sprint_items": sprint_items_serializable,
+            "capacity": capacity,
+            "total_points": sum(item.get("story_points", 0) for item in sprint_items),
+            "backlog_analysis": analysis,
+            "generated_at": datetime.utcnow().isoformat()
+        }
+        
+        # Save output if specified
+        if output_path:
+            self.file_handler.write_json_file(output_path, result)
+            
+        return result
+
+    async def process_requirements_async(self, requirements_file: str, output_path: Optional[str] = None) -> Dict[str, Any]:
+        """Process requirements document asynchronously."""
+        return await self._process_with_caching_async(
+            "requirements",
+            lambda: self._process_requirements_impl_async(requirements_file, output_path),
+            f"requirements_{requirements_file}",
+            requirements_file
+        )
+
+    def process_requirements_sync(self, requirements_file: str, output_path: Optional[str] = None) -> Dict[str, Any]:
+        """Process requirements document synchronously."""
+        return self._process_requirements_impl_sync(requirements_file, output_path)
+
+    async def _process_requirements_impl_async(self, requirements_file: str, output_path: Optional[str] = None) -> Dict[str, Any]:
+        """Async requirements processing implementation."""
+        # Read requirements file
+        with open(requirements_file, 'r', encoding='utf-8') as f:
+            requirements_content = f.read()
+        
+        # Process using async AI processor
+        async with AsyncAIProcessor() as async_ai:
+            # Extract requirements using AI
+            requirements = await async_ai.extract_requirements(requirements_content)
+            
+            # Generate user stories from requirements
+            user_stories = await async_ai.generate_user_stories(requirements.content)
+        
+        result = {
+            "requirements": requirements.content,
+            "user_stories": user_stories.content,
+            "source_file": requirements_file,
+            "processed_at": datetime.utcnow().isoformat(),
+            "summary": {
+                "total_requirements": len(requirements.content) if isinstance(requirements.content, list) else 1,
+                "total_user_stories": len(user_stories.content) if isinstance(user_stories.content, list) else 1
+            }
+        }
+        
+        # Save output if specified
+        if output_path:
+            self.file_handler.write_json_file(output_path, result)
+            
+        return result
+
+    def _process_requirements_impl_sync(self, requirements_file: str, output_path: Optional[str] = None) -> Dict[str, Any]:
+        """Sync requirements processing implementation."""
+        # Read requirements file
+        with open(requirements_file, 'r', encoding='utf-8') as f:
+            requirements_content = f.read()
+        
+        # Extract requirements using AI
+        requirements = self.ai_processor.extract_requirements(requirements_content)
+        
+        # Generate user stories from requirements
+        user_stories = self.user_story_generator.generate_user_stories(requirements.content)
+        
+        result = {
+            "requirements": requirements.content,
+            "user_stories": user_stories.content,
+            "source_file": requirements_file,
+            "processed_at": datetime.utcnow().isoformat(),
+            "summary": {
+                "total_requirements": len(requirements.content) if isinstance(requirements.content, list) else 1,
+                "total_user_stories": len(user_stories.content) if isinstance(user_stories.content, list) else 1
+            }
+        }
+        
+        # Save output if specified
+        if output_path:
+            self.file_handler.write_json_file(output_path, result)
+            
+        return result
+
 
 async def main_async():
     """Async main function."""
@@ -606,7 +782,7 @@ async def main_async():
     parser.add_argument(
         "command",
         nargs="?",
-        choices=["meeting-notes", "analyze-backlog", "interactive"],
+        choices=["meeting-notes", "analyze-backlog", "sprint-plan", "requirements", "interactive"],
         default="interactive",
         help="Command to execute",
     )
@@ -615,6 +791,7 @@ async def main_async():
     parser.add_argument("--sync", action="store_true", help="Use synchronous processing")
     parser.add_argument("--no-cache", action="store_true", help="Disable caching")
     parser.add_argument("--no-cli", action="store_true", help="Disable rich CLI")
+    parser.add_argument("--capacity", type=int, default=40, help="Sprint capacity for sprint-plan command")
 
     args = parser.parse_args()
 
@@ -654,6 +831,33 @@ async def main_async():
             else:
                 result = assistant.analyze_backlog_sync(args.input_file, args.output)
                 print(f"✅ Analyzed backlog. Health score: {result['analysis_summary']['health_score']:.1f}/100")
+                
+        elif args.command == "sprint-plan":
+            if not args.input_file:
+                print("Error: input_file required for sprint-plan command")
+                return
+                
+            # Extract capacity from args or use default
+            capacity = getattr(args, 'capacity', 40)
+            
+            if assistant.use_async:
+                result = await assistant.generate_sprint_plan_async(args.input_file, capacity, args.output)
+                print(f"✅ Generated sprint plan with {len(result['sprint_items'])} items")
+            else:
+                result = assistant.generate_sprint_plan_sync(args.input_file, capacity, args.output)
+                print(f"✅ Generated sprint plan with {len(result['sprint_items'])} items")
+                
+        elif args.command == "requirements":
+            if not args.input_file:
+                print("Error: input_file required for requirements command")
+                return
+                
+            if assistant.use_async:
+                result = await assistant.process_requirements_async(args.input_file, args.output)
+                print(f"✅ Processed requirements document. Generated {len(result['user_stories'])} user stories")
+            else:
+                result = assistant.process_requirements_sync(args.input_file, args.output)
+                print(f"✅ Processed requirements document. Generated {len(result['user_stories'])} user stories")
 
     except Exception as e:
         print(f"❌ Error: {str(e)}")

@@ -1,6 +1,7 @@
 """Coordinator Agent using pydantic-ai framework."""
 
 import os
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from dotenv import load_dotenv
@@ -31,19 +32,35 @@ class AgentCoordinationResult(BaseModel):
     dependencies: Dict[str, List[str]]
 
 
-# Create Coordinator Agent
+# Create Coordinator Agent with fallback support
 # Get AI service from environment, default to Claude
 default_service = os.getenv("DEFAULT_AI_SERVICE", "anthropic").lower()
-model_name = "claude-3-sonnet-20240229" if default_service == "anthropic" else "gpt-4"
-model_provider = (
-    f"{default_service}:{model_name}"
-    if default_service == "anthropic"
-    else f"openai:{model_name}"
-)
 
-coordinator = Agent(
-    model_provider,
-    system_prompt="""You are the Master Coordinator for the Smart Backlog Assistant multi-agent system. 
+# Define model configurations with fallback
+model_configs = {
+    "anthropic": "claude-3-haiku-20240307",
+    "openai": "gpt-4",
+    "qwen": "qwen3.5:cloud"
+}
+
+def get_model_provider_with_fallback():
+    """Get model provider with automatic fallback to Qwen when primary fails."""
+    primary_model = model_configs.get(default_service, "claude-3-haiku-20240307")
+    
+    if default_service == "anthropic":
+        return f"anthropic:{primary_model}"
+    elif default_service == "openai":
+        return f"openai:{primary_model}"
+    elif default_service == "qwen":
+        return f"openai:{model_configs['qwen']}"  # Qwen uses OpenAI-compatible API
+    else:
+        return f"anthropic:{model_configs['anthropic']}"  # Default fallback
+
+# Try primary service, fallback to Qwen if needed
+try:
+    coordinator = Agent(
+        get_model_provider_with_fallback(),
+        system_prompt="""You are the Master Coordinator for the Smart Backlog Assistant multi-agent system. 
     Your role is to:
     
     1. Orchestrate workflows across specialized agents (Document Analyst, Story Writer, Priority Manager, Backlog Coach)
@@ -55,6 +72,23 @@ coordinator = Agent(
     
     You have access to all agent capabilities and coordinate their execution to deliver complete solutions.""",
 )
+except Exception as e:
+    print(f"Primary model failed, trying Qwen fallback: {e}")
+    # Fallback to Qwen when primary service fails
+    coordinator = Agent(
+        f"openai:qwen3.5:cloud",  # Use OpenAI-compatible Qwen endpoint
+        system_prompt="""You are the Master Coordinator for the Smart Backlog Assistant multi-agent system. 
+    Your role is to:
+    
+    1. Orchestrate workflows across specialized agents (Document Analyst, Story Writer, Priority Manager, Backlog Coach)
+    2. Manage agent dependencies and execution sequences
+    3. Aggregate and synthesize results from multiple agents
+    4. Handle error recovery and fallback strategies
+    5. Optimize workflow efficiency and resource utilization
+    6. Provide comprehensive reporting and insights
+    
+    You have access to all agent capabilities and coordinate their execution to deliver complete solutions.""",
+    )
 
 
 @coordinator.tool

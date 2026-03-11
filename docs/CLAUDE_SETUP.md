@@ -56,13 +56,13 @@ pip install -e ".[test,dev,ml,database]"
 
 ```bash
 # Process meeting notes
-uv run python src/main.py meeting-notes sample_data/complex_meeting_notes.md
+uv run python src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md
 
 # Analyze backlog
-uv run python src/main.py backlog-analysis sample_data/large_backlog.json
+uv run python src/main_unified.py backlog-analysis sample_data/large_backlog.json
 
 # Generate sprint plan
-uv run python src/main.py sprint-plan sample_data/large_backlog.json --capacity 40
+uv run python src/main_unified.py sprint-plan sample_data/large_backlog.json --capacity 40
 ```
 
 ### Enhanced Framework with Claude
@@ -104,10 +104,10 @@ You can override the default AI service:
 
 ```bash
 # Use OpenAI instead of Claude
-DEFAULT_AI_SERVICE=openai uv run python src/main.py meeting-notes input.md
+DEFAULT_AI_SERVICE=openai uv run python src/main_unified.py meeting-notes input.md
 
 # Use Hugging Face models
-DEFAULT_AI_SERVICE=huggingface uv run python src/main.py analyze-backlog backlog.json
+DEFAULT_AI_SERVICE=huggingface uv run python src/main_unified.py analyze-backlog backlog.json
 ```
 
 ### Model Selection

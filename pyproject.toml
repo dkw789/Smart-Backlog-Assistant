@@ -41,14 +41,14 @@ classifiers = [
 requires-python = ">=3.9"
 dependencies = [
     "openai>=1.0.0",
-    "anthropic>=0.7.0",
+    "anthropic>=0.40.0",
     "PyPDF2>=3.0.0",
     "python-docx>=0.8.11",
     "pandas>=2.0.0",
     "requests>=2.31.0",
     "python-dotenv>=1.0.0",
     "pydantic>=2.0.0",
-    "pydantic-ai>=0.0.12",
+    "pydantic-ai>=0.0.14",
     "typing-extensions>=4.5.0",
     "rich>=13.0.0",
     "click>=8.0.0",

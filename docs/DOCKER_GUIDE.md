@@ -17,7 +17,7 @@ cp .env.example .env
 docker-compose up -d
 
 # Execute commands in the container
-docker-compose exec smart-backlog-assistant python src/main.py --help
+docker-compose exec smart-backlog-assistant python src/main_unified.py --help
 ```
 
 ### 2. Using Docker Directly
@@ -33,7 +33,7 @@ docker run -it \
   -v $(pwd)/input:/app/input:ro \
   -v $(pwd)/output:/app/output \
   smart-backlog-assistant \
-  python src/main.py meeting-notes /app/sample_data/meeting_notes.txt -o /app/output/result.json
+  python src/main_unified.py meeting-notes /app/sample_data/meeting_notes.txt -o /app/output/result.json
 ```
 
 ## Docker Compose Services
@@ -116,7 +116,7 @@ cp meeting_notes.txt input/
 
 # Process with Docker
 docker-compose exec smart-backlog-assistant \
-  python src/main.py meeting-notes /app/input/meeting_notes.txt \
+  python src/main_unified.py meeting-notes /app/input/meeting_notes.txt \
   -o /app/output/meeting_analysis.json
 
 # View results
@@ -130,7 +130,7 @@ cp backlog.json input/
 
 # Analyze with Docker
 docker-compose exec smart-backlog-assistant \
-  python src/main.py analyze-backlog /app/input/backlog.json \
+  python src/main_unified.py analyze-backlog /app/input/backlog.json \
   -o /app/output/backlog_analysis.json
 
 # View analysis
@@ -140,7 +140,7 @@ cat output/backlog_analysis.json | jq '.analysis_summary'
 ### Generate Sprint Plan
 ```bash
 docker-compose exec smart-backlog-assistant \
-  python src/main.py sprint-plan /app/input/backlog.json \
+  python src/main_unified.py sprint-plan /app/input/backlog.json \
   --capacity 40 -o /app/output/sprint_plan.json
 ```
 
@@ -150,7 +150,7 @@ docker-compose exec smart-backlog-assistant \
 cp requirements.pdf input/
 
 docker-compose exec smart-backlog-assistant \
-  python src/main.py requirements /app/input/requirements.pdf \
+  python src/main_unified.py requirements /app/input/requirements.pdf \
   -o /app/output/requirements_analysis.json
 ```
 
@@ -168,7 +168,7 @@ docker-compose exec smart-backlog-dev bash
 python -m pytest tests/ -v
 
 # Run with debug logging
-LOG_LEVEL=DEBUG python src/main.py --help
+LOG_LEVEL=DEBUG python src/main_unified.py --help
 ```
 
 ### Code Changes and Hot Reload
@@ -249,7 +249,7 @@ docker-compose exec smart-backlog-assistant ls -la /app/sample_data
 ```bash
 # Run with debug logging
 docker-compose exec smart-backlog-assistant \
-  env LOG_LEVEL=DEBUG python src/main.py meeting-notes /app/sample_data/meeting_notes.txt
+  env LOG_LEVEL=DEBUG python src/main_unified.py meeting-notes /app/sample_data/meeting_notes.txt
 
 # Interactive Python session
 docker-compose exec smart-backlog-assistant python

@@ -27,8 +27,17 @@ fi
 # Create demo output directory
 mkdir -p demo_output
 
-# Source uv environment
-source $HOME/.local/bin/env
+# Ensure output directory exists
+mkdir -p output
+
+# Detect Python runner (prefer uv if available)
+if command -v uv &> /dev/null; then
+    PYTHON_CMD="uv run python"
+    print_status "Using uv for faster execution..."
+else
+    PYTHON_CMD="python"
+    print_status "Using standard python (install uv for better performance)..."
+fi
 
 echo "🚀 Smart Backlog Assistant - Quick Demo"
 echo "Running core features only (~1 minute)"
@@ -36,7 +45,7 @@ echo ""
 
 # Demo 1: Meeting notes (most important)
 print_status "Processing meeting notes with Claude AI..."
-if uv run python src/main.py meeting-notes sample_data/complex_meeting_notes.md -o demo_output/quick_meeting.json; then
+if $PYTHON_CMD src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md -o demo_output/quick_meeting.json; then
     STORY_COUNT=$(grep -o '"title"' demo_output/quick_meeting.json | wc -l 2>/dev/null || echo "N/A")
     print_success "Generated $STORY_COUNT user stories from meeting notes"
 else
@@ -45,7 +54,7 @@ fi
 
 # Demo 2: Simple demo
 print_status "Running simple feature demo..."
-if uv run python src/simple_demo.py > /dev/null 2>&1; then
+if $PYTHON_CMD src/demo_main.py > /dev/null 2>&1; then
     print_success "Simple demo completed"
 else
     echo "⚠️ Simple demo had issues (non-critical)"

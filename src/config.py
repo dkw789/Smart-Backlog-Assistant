@@ -37,6 +37,7 @@ class AppConfig(BaseSettings):
     # AI Model Configuration
     openai_model: str = Field(default="gpt-4", description="OpenAI model to use")
     anthropic_model: str = Field(default="claude-3-haiku-20240307", description="Anthropic model to use")
+    qwen_model: str = Field(default="qwen3.5:cloud", description="Qwen model to use")
     
     # API Configuration
     api_host: str = Field(default="0.0.0.0", description="API server host")

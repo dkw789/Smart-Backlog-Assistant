@@ -1,5 +1,6 @@
 """AI processing module for the Smart Backlog Assistant."""
 
+import os
 import time
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
@@ -37,6 +38,7 @@ class AIProcessor:
 
         self.openai_client = None
         self.anthropic_client = None
+        self.qwen_client = None
         self.max_retries = config.max_retries
         self.timeout = config.timeout_seconds
         self.logger = get_logger(__name__)
@@ -69,8 +71,22 @@ class AIProcessor:
             except Exception as e:
                 self.logger.warning(f"Failed to initialize Anthropic client: {e}")
 
+        # Qwen (using OpenAI-compatible API)
+        qwen_key = config.openai_api_key  # Qwen uses OpenAI-compatible API
+        qwen_base_url = os.getenv("QWEN_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")
+        if qwen_key:
+            try:
+                validate_api_key(qwen_key, "Qwen")
+                self.qwen_client = openai.OpenAI(
+                    api_key=qwen_key,
+                    base_url=qwen_base_url
+                )
+                self.logger.info("Qwen client initialized successfully")
+            except Exception as e:
+                self.logger.warning(f"Failed to initialize Qwen client: {e}")
+
         # Check if at least one service is available
-        if not any([self.openai_client, self.anthropic_client]):
+        if not any([self.openai_client, self.anthropic_client, self.qwen_client]):
             raise ConfigurationError(
                 "No AI services available. Please configure at least one API key.",
                 "NO_AI_SERVICES",
@@ -239,6 +255,19 @@ class AIProcessor:
             except Exception as e:
                 self.logger.warning(f"OpenAI failed for {operation_type}: {e}")
             services_tried.add("openai")
+        elif default_service == "qwen" and self.qwen_client:
+            try:
+                response = self._call_qwen(prompt)
+                if response:
+                    return AIResponse(
+                        content=response,
+                        service_used="qwen",
+                        processing_time=time.time() - start_time,
+                        success=True,
+                    )
+            except Exception as e:
+                self.logger.warning(f"Qwen failed for {operation_type}: {e}")
+            services_tried.add("qwen")
 
         # Try remaining services as fallback
         if "anthropic" not in services_tried and self.anthropic_client:
@@ -269,6 +298,19 @@ class AIProcessor:
                 self.logger.warning(f"OpenAI failed for {operation_type}: {e}")
             services_tried.add("openai")
 
+        if "qwen" not in services_tried and self.qwen_client:
+            try:
+                response = self._call_qwen(prompt)
+                if response:
+                    return AIResponse(
+                        content=response,
+                        service_used="qwen",
+                        processing_time=time.time() - start_time,
+                        success=True,
+                    )
+            except Exception as e:
+                self.logger.warning(f"Qwen failed for {operation_type}: {e}")
+            services_tried.add("qwen")
 
         # All services failed
         return AIResponse(
@@ -307,3 +349,21 @@ class AIProcessor:
             messages=[{"role": "user", "content": prompt}],
         )
         return response.content[0].text
+
+    def _call_qwen(self, prompt: str) -> Optional[str]:
+        """Call Qwen API using OpenAI-compatible interface."""
+        from src.config import config
+        
+        response = self.qwen_client.chat.completions.create(
+            model=config.qwen_model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are an expert software engineering assistant.",
+                },
+                {"role": "user", "content": prompt},
+            ],
+            max_tokens=config.max_tokens,
+            temperature=config.temperature,
+        )
+        return response.choices[0].message.content

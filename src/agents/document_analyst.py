@@ -36,12 +36,28 @@ class MeetingNotesStructure(BaseModel):
 # Create Document Analyst Agent
 # Get AI service from environment, default to Claude
 default_service = os.getenv("DEFAULT_AI_SERVICE", "anthropic").lower()
-model_name = "claude-3-sonnet-20240229" if default_service == "anthropic" else "gpt-4"
-model_provider = (
-    f"{default_service}:{model_name}"
-    if default_service == "anthropic"
-    else f"openai:{model_name}"
-)
+
+# Define model configurations
+model_configs = {
+    "anthropic": "claude-3-haiku-20240307",
+    "openai": "gpt-4", 
+    "qwen": "qwen3.5:cloud"
+}
+
+def get_model_provider():
+    """Get model provider based on service."""
+    model_name = model_configs.get(default_service, "claude-3-haiku-20240307")
+    
+    if default_service == "anthropic":
+        return f"anthropic:{model_name}"
+    elif default_service == "openai":
+        return f"openai:{model_name}"
+    elif default_service == "qwen":
+        return f"openai:{model_configs['qwen']}"  # Qwen uses OpenAI-compatible API
+    else:
+        return f"anthropic:{model_configs['anthropic']}"  # Default fallback
+
+model_provider = get_model_provider()
 
 document_analyst = Agent(
     model_provider,

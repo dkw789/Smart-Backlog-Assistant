@@ -2,46 +2,43 @@
 
 ## 🚀 **Quick Start Commands**
 
-### **Basic Framework (Original)**
+### **Main Framework (Unified)**
 ```bash
 # Process meeting notes
-uv run python src/main.py meeting-notes sample_data/complex_meeting_notes.md -o output/meeting_analysis.json
+python src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md -o output/meeting_analysis.json
 
 # Analyze backlog health
-uv run python src/main.py analyze-backlog sample_data/large_backlog.json -o output/backlog_analysis.json
+python src/main_unified.py analyze-backlog sample_data/large_backlog.json -o output/backlog_analysis.json
 
 # Generate sprint plan
-uv run python src/main.py sprint-plan sample_data/large_backlog.json --capacity 40 -o output/sprint_plan.json
+python src/main_unified.py sprint-plan sample_data/large_backlog.json --capacity 40 -o output/sprint_plan.json
 
 # Process requirements document
-uv run python src/main.py requirements sample_data/requirements_document.md -o output/requirements_analysis.json
+python src/main_unified.py requirements sample_data/requirements_document.md -o output/requirements_analysis.json
 ```
 
-### **Pydantic-AI Framework (Enhanced)**
+### **Pydantic-AI Framework (Multi-Agent)**
 ```bash
-# Process meeting notes with pydantic-ai agents
-uv run python src/agents/pydantic_ai_main.py meeting-notes sample_data/complex_meeting_notes.md -o output/pydantic_ai_meeting.json
+# Process meeting notes with multi-agent system
+python src/agents/pydantic_ai_main.py meeting-notes sample_data/complex_meeting_notes.md -o output/pydantic_ai_meeting.json
 
-# Analyze backlog with multi-agent orchestration
-uv run python src/agents/pydantic_ai_main.py analyze-backlog sample_data/large_backlog.json -o output/pydantic_ai_backlog.json
+# Analyze backlog with agent orchestration
+python src/agents/pydantic_ai_main.py analyze-backlog sample_data/large_backlog.json -o output/pydantic_ai_backlog.json
 
 # Generate sprint plan with priority manager agent
-uv run python src/agents/pydantic_ai_main.py sprint-plan sample_data/large_backlog.json --capacity 40 -o output/pydantic_ai_sprint.json
+python src/agents/pydantic_ai_main.py sprint-plan sample_data/large_backlog.json --capacity 40 -o output/pydantic_ai_sprint.json
 
 # Process requirements with comprehensive agent workflow
-uv run python src/agents/pydantic_ai_main.py requirements sample_data/requirements_document.md -o output/pydantic_ai_requirements.json
+python src/agents/pydantic_ai_main.py requirements sample_data/requirements_document.md -o output/pydantic_ai_requirements.json
 ```
 
-### **Enhanced Framework with Rich CLI**
+### **Interactive Mode**
 ```bash
-# Interactive mode
-uv run python src/enhanced_main.py --interactive
+# Interactive CLI mode (main unified framework)
+python src/main_unified.py --interactive
 
-# Command line with caching
-uv run python src/enhanced_main.py --framework original --cache-enabled meeting-notes sample_data/complex_meeting_notes.md
-
-# Use pydantic-ai framework
-uv run python src/enhanced_main.py --framework pydantic-ai backlog-analysis sample_data/large_backlog.json
+# Demo mode without API keys
+python src/demo_main.py
 
 # Development workflow
 ./scripts/dev.sh interactive  # Start interactive mode
@@ -59,10 +56,10 @@ uv run python src/enhanced_main.py --framework pydantic-ai backlog-analysis samp
 ./scripts/dev.sh test-cov
 
 # Run fast tests (skip slow ones)
-uv run pytest tests/ -v -m "not slow"
+pytest tests/ -v -m "not slow"
 
 # Run specific test module
-uv run pytest tests/test_models.py -v
+pytest tests/test_models.py -v
 
 # Run configuration test
 ./scripts/dev.sh config-test
@@ -83,7 +80,7 @@ pytest --cov=src --cov-report=html --cov-report=term-missing
 ./scripts/dev.sh type-check
 
 # Security scan
-uv run bandit -r src/
+bandit -r src/
 
 # Development workflow
 ./scripts/dev.sh install     # Install dependencies
@@ -127,33 +124,34 @@ uv run bandit -r src/
 ### **Sample Data Processing**
 ```bash
 # Demo 1: Complex meeting notes analysis
-uv run python src/main.py meeting-notes sample_data/complex_meeting_notes.md -o demo_output/meeting_demo.json
+python src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md -o demo_output/meeting_demo.json
 
 # Demo 2: Large backlog analysis
-uv run python src/main.py analyze-backlog sample_data/large_backlog.json -o demo_output/backlog_demo.json
+python src/main_unified.py analyze-backlog sample_data/large_backlog.json -o demo_output/backlog_demo.json
 
-# Demo 3: Sprint planninguv run python src/main.py sprint-plan sample_data/large_backlog.json --capacity 40 -o demo_output/sprint_demo.json
+# Demo 3: Sprint planning
+python src/main_unified.py sprint-plan sample_data/large_backlog.json --capacity 40 -o demo_output/sprint_demo.json
 
 # Demo 4: Requirements processing
-uv run python src/main.py requirements sample_data/requirements_document.md -o demo_output/requirements_demo.json
+python src/main_unified.py requirements sample_data/requirements_document.md -o demo_output/requirements_demo.json
 
-# Demo 5: Enhanced features demo
-uv run python src/simple_demo.py
+# Demo 5: No-API demo mode
+python src/demo_main.py
 
 # Demo 6: Pydantic-AI multi-agent demo
-uv run python src/agents/pydantic_ai_main.py meeting-notes sample_data/complex_meeting_notes.md
+python src/agents/pydantic_ai_main.py meeting-notes sample_data/complex_meeting_notes.md
 ```
 
 ### **Pydantic-AI Agent Demos**
 ```bash
 # Demo 1: Multi-agent meeting notes processing
-uv run python src/agents/pydantic_ai_main.py meeting-notes sample_data/complex_meeting_notes.md -o demo_output/agent_meeting.json
+python src/agents/pydantic_ai_main.py meeting-notes sample_data/complex_meeting_notes.md -o demo_output/agent_meeting.json
 
 # Demo 2: Comprehensive backlog analysis with coaching
-uv run python src/agents/pydantic_ai_main.py analyze-backlog sample_data/large_backlog.json -o demo_output/agent_backlog.json
+python src/agents/pydantic_ai_main.py analyze-backlog sample_data/large_backlog.json -o demo_output/agent_backlog.json
 
 # Demo 3: Intelligent sprint planning
-uv run python src/agents/pydantic_ai_main.py sprint-plan sample_data/large_backlog.json --capacity 40 -o demo_output/agent_sprint.json
+python src/agents/pydantic_ai_main.py sprint-plan sample_data/large_backlog.json --capacity 40 -o demo_output/agent_sprint.json
 ```
 
 ---
@@ -180,31 +178,36 @@ pip install -e ".[docs]"      # Documentation tools
 ### **Custom Configuration**
 ```bash
 # Run with custom log level
-LOG_LEVEL=DEBUG uv run python src/main.py meeting-notes input.txt
+LOG_LEVEL=DEBUG python src/main_unified.py meeting-notes input.txt
 
 # Run with specific AI service
-AI_SERVICE=anthropic uv run python src/main.py analyze-backlog backlog.json
-
-# Run with enhanced framework options
-uv run python src/enhanced_main.py --framework pydantic-ai --cache-enabled meeting-notes input.txt
+AI_SERVICE=anthropic python src/main_unified.py analyze-backlog backlog.json
 
 # Run with environment variables
-DEFAULT_AI_SERVICE=anthropic uv run python src/agents/pydantic_ai_main.py meeting-notes input.txt
+DEFAULT_AI_SERVICE=anthropic python src/agents/pydantic_ai_main.py meeting-notes input.txt
 
 # Run with custom timeout
-TIMEOUT_SECONDS=60 uv run python src/main.py sprint-plan backlog.json --capacity 50
+TIMEOUT_SECONDS=60 python src/main_unified.py sprint-plan backlog.json --capacity 50
+
+# Use Claude 3.5 Sonnet (default model)
+DEFAULT_AI_SERVICE=anthropic python src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md
 ```
 
 ### **Batch Processing**
 ```bash
 # Process multiple files
 for file in sample_data/*.md; do
-    uv run python src/main.py meeting-notes "$file" -o "output/$(basename "$file" .md)_analysis.json"
+    python src/main_unified.py meeting-notes "$file" -o "output/$(basename "$file" .md)_analysis.json"
 done
 
 # Batch backlog analysis
 for file in sample_data/*.json; do
-    uv run python src/main.py analyze-backlog "$file" -o "output/$(basename "$file" .json)_analysis.json"
+    python src/main_unified.py analyze-backlog "$file" -o "output/$(basename "$file" .json)_analysis.json"
+done
+
+# Batch processing with pydantic-ai agents
+for file in sample_data/*.md; do
+    python src/agents/pydantic_ai_main.py meeting-notes "$file" -o "output/agent_$(basename "$file" .md).json"
 done
 ```
 
@@ -223,32 +226,35 @@ python -c "from src.agents.coordinator import coordinator; print('Agents OK')"
 ### **Performance Monitoring**
 ```bash
 # Run with performance profiling
-python -m cProfile -o profile.stats src/main.py meeting-notes sample_data/complex_meeting_notes.md
+python -m cProfile -o profile.stats src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md
 
 # Analyze performance
 python -c "import pstats; p = pstats.Stats('profile.stats'); p.sort_stats('cumulative').print_stats(20)"
 
 # Memory usage monitoring
-python -m memory_profiler src/main.py meeting-notes sample_data/complex_meeting_notes.md
+python -m memory_profiler src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md
 ```
 
 ### **Debug Mode**
 ```bash
 # Run in debug mode with verbose logging
-LOG_LEVEL=DEBUG python src/main.py meeting-notes sample_data/complex_meeting_notes.md -o debug_output.json
+LOG_LEVEL=DEBUG python src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md -o debug_output.json
 
 # Run with error details
-python src/main.py meeting-notes nonexistent_file.txt 2>&1 | tee error_log.txt
+python src/main_unified.py meeting-notes nonexistent_file.txt 2>&1 | tee error_log.txt
 ```
 
 ---
 
 ## 🌐 **API & Integration**
 
-### **REST API (Future Enhancement)**
+### **REST API**
 ```bash
-# Start API server (when implemented)
-python src/api/server.py --host 0.0.0.0 --port 8000
+# Start API server
+python src/api/main.py
+
+# Or with uvicorn directly
+uvicorn src.api.main:app --host 0.0.0.0 --port 8000
 
 # Health check
 curl http://localhost:8000/health
@@ -257,6 +263,9 @@ curl http://localhost:8000/health
 curl -X POST http://localhost:8000/api/v1/meeting-notes \
   -H "Content-Type: application/json" \
   -d '{"file_path": "sample_data/complex_meeting_notes.md"}'
+
+# API documentation
+open http://localhost:8000/docs
 ```
 
 ### **Webhook Integration (Future Enhancement)**
@@ -265,7 +274,7 @@ curl -X POST http://localhost:8000/api/v1/meeting-notes \
 export WEBHOOK_URL="https://your-webhook-endpoint.com/backlog-updates"
 
 # Process with webhook notification
-python src/main.py analyze-backlog sample_data/large_backlog.json --webhook-notify
+python src/main_unified.py analyze-backlog sample_data/large_backlog.json --webhook-notify
 ```
 
 ---
@@ -275,13 +284,13 @@ python src/main.py analyze-backlog sample_data/large_backlog.json --webhook-noti
 ### **Rich CLI Interface**
 ```bash
 # Start interactive mode with rich UI
-python src/utils/rich_cli.py
+python src/main_unified.py --interactive
 
-# Interactive workflow builder
-python src/agents/pydantic_ai_main.py interactive
+# Demo mode without API keys
+python src/demo_main.py
 
-# Guided setup wizard
-python setup_wizard.py
+# Interactive agent workflow
+python src/agents/pydantic_ai_main.py --interactive
 ```
 
 ---
@@ -291,14 +300,14 @@ python setup_wizard.py
 ### **Benchmark Commands**
 ```bash
 # Benchmark meeting notes processing
-time python src/main.py meeting-notes sample_data/complex_meeting_notes.md -o /dev/null
+time python src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md -o /dev/null
 
 # Benchmark large backlog analysis
-time python src/main.py analyze-backlog sample_data/large_backlog.json -o /dev/null
+time python src/main_unified.py analyze-backlog sample_data/large_backlog.json -o /dev/null
 
 # Compare frameworks
 echo "=== Original Framework ==="
-time python src/main.py meeting-notes sample_data/complex_meeting_notes.md -o /tmp/original.json
+time python src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md -o /tmp/original.json
 
 echo "=== Pydantic-AI Framework ==="
 time python src/agents/pydantic_ai_main.py meeting-notes sample_data/complex_meeting_notes.md -o /tmp/pydantic_ai.json
@@ -376,10 +385,10 @@ kubectl get pods -l app=smart-backlog-assistant
 ### **Most Used Commands**
 ```bash
 # 1. Basic meeting notes processing
-python src/main.py meeting-notes input.md -o output.json
+python src/main_unified.py meeting-notes sample_data/complex_meeting_notes.md -o output/meeting_analysis.json
 
 # 2. Enhanced agent-based processing  
-python src/agents/pydantic_ai_main.py meeting-notes input.md -o output.json
+python src/agents/pydantic_ai_main.py meeting-notes sample_data/complex_meeting_notes.md -o output/pydantic_ai_meeting.json
 
 # 3. Run tests with coverage
 make test-cov
@@ -387,8 +396,11 @@ make test-cov
 # 4. Format and lint code
 make format && make lint
 
-# 5. Build and run Docker
-make docker-build && make docker-run
+# 5. Start API server
+python src/api/main.py
+
+# 6. Interactive demo mode
+python src/demo_main.py
 ```
 
 ### **Environment Variables**
@@ -397,9 +409,13 @@ export OPENAI_API_KEY="your_key_here"
 export ANTHROPIC_API_KEY="your_key_here"
 export HUGGINGFACE_API_KEY="your_key_here"
 export LOG_LEVEL="INFO"  # DEBUG, INFO, WARNING, ERROR
+export DEFAULT_AI_SERVICE="anthropic"  # anthropic, openai
 export MAX_RETRIES="3"
 export TIMEOUT_SECONDS="30"
 export CACHE_ENABLED="true"
+
+# Claude 3.5 Sonnet is the default model for Anthropic
+# GPT-4 is the default model for OpenAI
 ```
 
 ---

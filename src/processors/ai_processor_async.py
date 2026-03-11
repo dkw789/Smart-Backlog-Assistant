@@ -1,6 +1,7 @@
 """Async AI processing module for the Smart Backlog Assistant."""
 
 import asyncio
+import os
 import time
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Union
@@ -40,6 +41,7 @@ class AsyncAIProcessor:
     def __init__(self):
         self.openai_client = None
         self.anthropic_client = None
+        self.qwen_client = None
         self.max_retries = config.max_retries
         self.timeout = config.timeout_seconds
         self.logger = get_logger(__name__)
@@ -82,8 +84,22 @@ class AsyncAIProcessor:
             except Exception as e:
                 self.logger.warning(f"Failed to initialize async Anthropic client: {e}")
 
+        # Qwen (using OpenAI-compatible API)
+        qwen_key = config.openai_api_key  # Qwen uses OpenAI-compatible API
+        qwen_base_url = os.getenv("QWEN_BASE_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1")
+        if qwen_key:
+            try:
+                validate_api_key(qwen_key, "Qwen")
+                self.qwen_client = openai.AsyncOpenAI(
+                    api_key=qwen_key,
+                    base_url=qwen_base_url
+                )
+                self.logger.info("Async Qwen client initialized successfully")
+            except Exception as e:
+                self.logger.warning(f"Failed to initialize async Qwen client: {e}")
+
         # Check if at least one service is available
-        if not any([self.openai_client, self.anthropic_client]):
+        if not any([self.openai_client, self.anthropic_client, self.qwen_client]):
             raise ConfigurationError(
                 "No AI services available. Please configure at least one API key.",
                 "NO_AI_SERVICES",
