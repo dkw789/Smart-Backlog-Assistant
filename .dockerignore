@@ -4,7 +4,9 @@
 .gitattributes
 README.md
 CHANGELOG.md
-LICENSE
+
+# Allow LICENSE file for Docker builds (required by pyproject.toml)
+!LICENSE
 
 # Python
 __pycache__/
