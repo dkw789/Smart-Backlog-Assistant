@@ -10,15 +10,16 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-# Import models directly (works with PYTHONPATH=src)
-from models.ai_models import AgentRole, AIRequest, AIResponse, AIService
-from models.backlog_models import (
+# Import models from the properly configured models package
+from src.models import (
+    AgentRole,
+    AIRequest,
+    AIResponse,
+    AIService,
     AcceptanceCriterion,
     BacklogItem,
     BacklogProject,
     UserStory,
-)
-from models.base_models import (
     BusinessImpact,
     Category,
     EffortEstimate,

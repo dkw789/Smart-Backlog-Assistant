@@ -35,11 +35,11 @@ COPY .env.example .env.example
 # Install the project in editable mode after copying source code
 RUN uv pip install -e .
 
-# Create output directory
-RUN mkdir -p /app/output
+# Create output directory and fix cache permissions
+RUN mkdir -p /app/output /tmp/uv-cache && \
+    useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /app /tmp/uv-cache
 
-# Create non-root user for security
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
 # Health check
