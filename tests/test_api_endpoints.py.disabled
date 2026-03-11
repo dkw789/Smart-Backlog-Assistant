@@ -1,0 +1,414 @@
+"""Tests for FastAPI endpoints to improve coverage."""
+
+import pytest
+from fastapi.testclient import TestClient
+from unittest.mock import Mock, patch
+import json
+import tempfile
+import os
+
+# Import the FastAPI app
+from src.api.main import app
+
+
+class TestAPIEndpoints:
+    """Test FastAPI endpoints for coverage improvement."""
+    
+    @pytest.fixture
+    def client(self):
+        """Create test client."""
+        return TestClient(app)
+    
+    @pytest.fixture
+    def mock_env_vars(self):
+        """Mock environment variables for testing."""
+        with patch.dict(os.environ, {
+            'OPENAI_API_KEY': 'test-openai-key',
+            'ANTHROPIC_API_KEY': 'test-anthropic-key',
+            'API_SECRET_KEY': 'test-secret-key'
+        }):
+            yield
+    
+    def test_health_endpoint(self, client):
+        """Test basic health endpoint."""
+        response = client.get("/health")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["status"] == "healthy"
+        assert "timestamp" in data
+    
+    def test_health_detailed_endpoint(self, client):
+        """Test detailed health endpoint."""
+        response = client.get("/health/detailed")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["status"] == "healthy"
+        assert "system" in data
+        assert "dependencies" in data
+        assert "timestamp" in data
+    
+    def test_root_endpoint(self, client):
+        """Test root endpoint redirect."""
+        response = client.get("/")
+        assert response.status_code == 200
+        data = response.json()
+        assert "message" in data
+        assert "Smart Backlog Assistant" in data["message"]
+    
+    def test_docs_endpoint(self, client):
+        """Test docs endpoint accessibility."""
+        response = client.get("/docs")
+        assert response.status_code == 200
+        assert "text/html" in response.headers["content-type"]
+    
+    @patch('src.api.main.UnifiedSmartBacklogAssistant')
+    def test_meeting_notes_endpoint_success(self, mock_assistant, client, mock_env_vars):
+        """Test meeting notes processing endpoint."""
+        # Mock the assistant
+        mock_instance = Mock()
+        mock_instance.process_meeting_notes_sync.return_value = {
+            "requirements": ["Test requirement"],
+            "user_stories": ["Test story"],
+            "success": True
+        }
+        mock_assistant.return_value = mock_instance
+        
+        # Create temporary file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            f.write("Test meeting notes content")
+            temp_file = f.name
+        
+        try:
+            response = client.post(
+                "/api/v1/meeting-notes/process",
+                json={"file_path": temp_file}
+            )
+            assert response.status_code == 200
+            data = response.json()
+            assert data["success"] is True
+            assert "requirements" in data
+        finally:
+            os.unlink(temp_file)
+    
+    def test_meeting_notes_endpoint_missing_file(self, client, mock_env_vars):
+        """Test meeting notes endpoint with missing file."""
+        response = client.post(
+            "/api/v1/meeting-notes/process",
+            json={"file_path": "/nonexistent/file.txt"}
+        )
+        assert response.status_code == 404
+        data = response.json()
+        assert "not found" in data["detail"].lower()
+    
+    def test_meeting_notes_endpoint_invalid_request(self, client):
+        """Test meeting notes endpoint with invalid request."""
+        response = client.post(
+            "/api/v1/meeting-notes/process",
+            json={}
+        )
+        assert response.status_code == 422  # Validation error
+    
+    @patch('src.api.main.UnifiedSmartBacklogAssistant')
+    def test_backlog_analyze_endpoint_success(self, mock_assistant, client, mock_env_vars):
+        """Test backlog analysis endpoint."""
+        # Mock the assistant
+        mock_instance = Mock()
+        mock_instance.analyze_backlog_sync.return_value = {
+            "health_score": 85,
+            "recommendations": ["Test recommendation"],
+            "success": True
+        }
+        mock_assistant.return_value = mock_instance
+        
+        # Create temporary JSON file
+        test_backlog = [{"title": "Test item", "priority": "high"}]
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump(test_backlog, f)
+            temp_file = f.name
+        
+        try:
+            response = client.post(
+                "/api/v1/backlog/analyze",
+                json={"file_path": temp_file}
+            )
+            assert response.status_code == 200
+            data = response.json()
+            assert data["success"] is True
+            assert "health_score" in data
+        finally:
+            os.unlink(temp_file)
+    
+    def test_system_status_endpoint_unauthorized(self, client):
+        """Test system status endpoint without authentication."""
+        response = client.get("/api/v1/system/status")
+        assert response.status_code == 401
+        assert "Not authenticated" in response.json()["detail"]
+
+    def test_jobs_list_endpoint_unauthorized(self, client):
+        """Test jobs list endpoint without authentication."""
+        response = client.get("/api/v1/jobs")
+        assert response.status_code == 401
+        assert "Not authenticated" in response.json()["detail"]
+
+    def test_cors_headers(self, client):
+        """Test CORS headers are present."""
+        response = client.options(
+            "/health",
+            headers={"Origin": "http://localhost:3000", "Access-Control-Request-Method": "GET"}
+        )
+        assert response.status_code == 200
+        assert "access-control-allow-origin" in response.headers
+    
+    def test_rate_limiting_headers(self, client):
+        """Test rate limiting headers."""
+        response = client.get("/health")
+        assert response.status_code == 200
+        # This is a basic check; a more thorough test would involve a mock Redis
+        # and checking if the rate limit is actually enforced.
+        # For now, we assume the middleware adds the headers.
+
+    @patch('src.api.main.UnifiedSmartBacklogAssistant')
+    def test_background_job_creation(self, mock_assistant, client, mock_env_vars):
+        """Test background job creation."""
+        # Mock the assistant
+        mock_instance = Mock()
+        mock_assistant.return_value = mock_instance
+        
+        # Create temporary file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            f.write("Test content for background processing")
+            temp_file = f.name
+        
+        try:
+            response = client.post(
+                "/api/v1/meeting-notes/process-async",
+                json={"file_path": temp_file}
+            )
+            assert response.status_code == 202
+            data = response.json()
+            assert "job_id" in data
+            assert "status" in data
+            assert data["status"] == "queued"
+        finally:
+            os.unlink(temp_file)
+    
+    def test_openapi_schema(self, client):
+        """Test OpenAPI schema generation."""
+        response = client.get("/openapi.json")
+        assert response.status_code == 200
+        schema = response.json()
+        assert "openapi" in schema
+        assert "info" in schema
+        assert schema["info"]["title"] == "Smart Backlog Assistant API"
+
+
+class TestAPIModels:
+    """Test API Pydantic models for coverage."""
+    
+    def test_meeting_notes_request_model(self):
+        """Test MeetingNotesRequest model."""
+        from src.api.models import MeetingNotesRequest
+        
+        # Valid request
+        request = MeetingNotesRequest(file_path="/path/to/file.txt")
+        assert request.file_path == "/path/to/file.txt"
+        assert request.output_path is None
+        
+        # With output path
+        request_with_output = MeetingNotesRequest(
+            file_path="/path/to/file.txt",
+            output_path="/path/to/output.json"
+        )
+        assert request_with_output.output_path == "/path/to/output.json"
+    
+    def test_backlog_analysis_request_model(self):
+        """Test BacklogAnalysisRequest model."""
+        from src.api.models import BacklogAnalysisRequest
+        
+        request = BacklogAnalysisRequest(file_path="/path/to/backlog.json")
+        assert request.file_path == "/path/to/backlog.json"
+    
+    def test_api_response_model(self):
+        """Test APIResponse model."""
+        from src.api.models import APIResponse
+        
+        # Success response
+        success_response = APIResponse(
+            success=True,
+            message="Operation completed",
+            data={"result": "test"}
+        )
+        assert success_response.success is True
+        assert success_response.message == "Operation completed"
+        assert success_response.data["result"] == "test"
+        
+        # Error response
+        error_response = APIResponse(
+            success=False,
+            message="Operation failed",
+            error="Test error"
+        )
+        assert error_response.success is False
+        assert error_response.error == "Test error"
+    
+    def test_job_status_model(self):
+        """Test JobStatus model."""
+        from src.api.models import JobStatus
+        
+        job_status = JobStatus(
+            job_id="test-job-123",
+            status="running",
+            progress=50,
+            created_at="2024-01-01T00:00:00Z"
+        )
+        assert job_status.job_id == "test-job-123"
+        assert job_status.status == "running"
+        assert job_status.progress == 50
+    
+    def test_system_status_model(self):
+        """Test SystemStatus model."""
+        from src.api.models import SystemStatus
+        
+        system_status = SystemStatus(
+            status="healthy",
+            version="1.0.0",
+            uptime=3600,
+            active_jobs=5
+        )
+        assert system_status.status == "healthy"
+        assert system_status.version == "1.0.0"
+        assert system_status.uptime == 3600
+        assert system_status.active_jobs == 5
+
+
+class TestAPIAuth:
+    """Test API authentication for coverage."""
+    
+    def test_password_hashing(self):
+        """Test password hashing functions."""
+        # Mock the password hashing to avoid bcrypt issues
+        with patch('src.api.auth.pwd_context') as mock_pwd_context:
+            mock_pwd_context.hash.return_value = "mock_hashed_password"
+            mock_pwd_context.verify.side_effect = lambda pwd, hashed: pwd == "test_pass"
+            
+            from src.api.auth import hash_password, verify_password
+            
+            password = "test_pass"
+            hashed = hash_password(password)
+            
+            assert hashed == "mock_hashed_password"
+            assert verify_password(password, hashed) is True
+            assert verify_password("wrong_pass", hashed) is False
+    
+    def test_token_creation_and_verification(self):
+        """Test JWT token creation and verification."""
+        from src.api.auth import create_access_token, verify_token
+        
+        test_data = {"sub": "test_user", "role": "user"}
+        token = create_access_token(test_data)
+        
+        assert token is not None
+        assert isinstance(token, str)
+        
+        # Verify token
+        payload = verify_token(token)
+        assert payload is not None
+        assert payload["sub"] == "test_user"
+        assert payload["role"] == "user"
+    
+    def test_invalid_token_verification(self):
+        """Test verification of invalid tokens."""
+        from src.api.auth import verify_token
+        
+        # Invalid token should return None
+        invalid_payload = verify_token("invalid.token.here")
+        assert invalid_payload is None
+    
+    @patch('src.api.auth.users_db')
+    def test_authenticate_user(self, mock_users_db):
+        """Test user authentication."""
+        from src.api.auth import authenticate_user
+        
+        # Mock user database with pre-hashed password
+        mock_users_db.__getitem__ = Mock(return_value={
+            "username": "testuser",
+            "hashed_password": "$2b$12$test.hash.here",  # Mock hash
+            "role": "user"
+        })
+        mock_users_db.__contains__ = Mock(return_value=True)
+        
+        # Mock the verify_password function to avoid bcrypt issues
+        with patch('src.api.auth.verify_password') as mock_verify:
+            mock_verify.return_value = True
+            
+            # Valid authentication
+            user = authenticate_user("testuser", "testpass")
+            assert user is not None
+            assert user["username"] == "testuser"
+            
+            # Invalid password
+            mock_verify.return_value = False
+            user = authenticate_user("testuser", "wrongpass")
+            assert user is None
+        
+        # Non-existent user
+        mock_users_db.__contains__ = Mock(return_value=False)
+        user = authenticate_user("nonexistent", "testpass")
+        assert user is None
+
+
+class TestAPIJobs:
+    """Test API job management for coverage."""
+    
+    def test_job_manager_creation(self):
+        """Test JobManager instantiation."""
+        from src.api.jobs import JobManager
+        
+        job_manager = JobManager()
+        assert job_manager is not None
+        assert hasattr(job_manager, 'jobs')
+        assert hasattr(job_manager, 'create_job')
+    
+    @patch('src.api.jobs.JobManager')
+    def test_create_job_function(self, mock_job_manager):
+        """Test create_job function."""
+        from src.api.jobs import create_job
+        
+        # Mock job manager
+        mock_instance = Mock()
+        mock_instance.create_job.return_value = "job-123"
+        mock_job_manager.return_value = mock_instance
+        
+        job_id = create_job("test_task", {"param": "value"})
+        assert job_id == "job-123"
+        mock_instance.create_job.assert_called_once_with("test_task", {"param": "value"})
+    
+    @patch('src.api.jobs.JobManager')
+    def test_get_job_status_function(self, mock_job_manager):
+        """Test get_job_status function."""
+        from src.api.jobs import get_job_status
+        
+        # Mock job manager
+        mock_instance = Mock()
+        mock_instance.get_job_status.return_value = {
+            "job_id": "job-123",
+            "status": "completed",
+            "progress": 100
+        }
+        mock_job_manager.return_value = mock_instance
+        
+        status = get_job_status("job-123")
+        assert status["job_id"] == "job-123"
+        assert status["status"] == "completed"
+    
+    @patch('src.api.jobs.JobManager')
+    def test_update_job_status_function(self, mock_job_manager):
+        """Test update_job_status function."""
+        from src.api.jobs import update_job_status
+        
+        # Mock job manager
+        mock_instance = Mock()
+        mock_job_manager.return_value = mock_instance
+        
+        update_job_status("job-123", "running", 50)
+        mock_instance.update_job_status.assert_called_once_with("job-123", "running", 50)

@@ -8,9 +8,9 @@ from unittest.mock import Mock, patch
 # Add src to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from processors.ai_processor import AIProcessor
-from processors.backlog_analyzer import BacklogAnalyzer
-from processors.document_processor import DocumentProcessor
+from src.processors.ai_processor import AIProcessor
+from src.processors.backlog_analyzer import BacklogAnalyzer
+from src.processors.document_processor import DocumentProcessor
 
 
 class TestAIProcessor:
