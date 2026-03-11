@@ -1,5 +1,6 @@
 # Smart Backlog Assistant Docker Image
-FROM python:3.11-slim
+# Use Python 3.12 slim image for smaller size
+FROM python:3.12-slim
 
 # Set working directory
 WORKDIR /app
@@ -24,7 +25,7 @@ RUN apt-get update && apt-get install -y \
 COPY pyproject.toml uv.lock* LICENSE README.md ./
 
 # Install Python dependencies using uv
-RUN uv sync --frozen --no-dev --no-install-project
+RUN uv sync --frozen --no-install-project
 
 # Copy application code
 COPY src/ ./src/
@@ -34,6 +35,9 @@ COPY .env.example .env.example
 
 # Install the project in editable mode after copying source code
 RUN uv pip install -e .
+
+# Install test dependencies
+RUN uv add --dev pytest pytest-cov
 
 # Create output directory and fix cache permissions
 RUN mkdir -p /app/output /tmp/uv-cache && \
